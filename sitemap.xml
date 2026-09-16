@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://example.co.ke/</loc><priority>1.0</priority></url>
+  <url><loc>https://example.co.ke/products/</loc><priority>0.9</priority></url>
+  <url><loc>https://example.co.ke/wholesale/</loc><priority>0.8</priority></url>
+  <url><loc>https://example.co.ke/about/</loc><priority>0.7</priority></url>
+  <url><loc>https://example.co.ke/location/</loc><priority>0.8</priority></url>
+  <url><loc>https://example.co.ke/faq/</loc><priority>0.7</priority></url>
+  <url><loc>https://example.co.ke/guides/</loc><priority>0.8</priority></url>
+  <url><loc>https://example.co.ke/guides/choose-sofa-stand/</loc><priority>0.7</priority></url>
+  <url><loc>https://example.co.ke/guides/zipper-sizes/</loc><priority>0.7</priority></url>
+  <url><loc>https://example.co.ke/guides/upholstery-materials/</loc><priority>0.7</priority></url>
+  <url><loc>https://example.co.ke/guides/buying-bulk-gikomba/</loc><priority>0.7</priority></url>
+  <url><loc>https://example.co.ke/contact/</loc><priority>0.8</priority></url>
+</urlset>
