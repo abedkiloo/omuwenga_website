@@ -1,4 +1,4 @@
-# Gikomba Upholstery Supplies website
+# Omuwenga Suppliers website
 
 Plain HTML, CSS and JavaScript brochure website. It has no framework, database, cart, pricing, stock integration or checkout.
 
@@ -16,7 +16,7 @@ Open `http://localhost:8080`. Upload the entire folder to shared hosting, GitHub
 
 Search and replace these placeholders across all `.html`, `robots.txt` and `sitemap.xml` files:
 
-- `Gikomba Upholstery Supplies` — real business name
+- `Omuwenga Suppliers` — real business name
 - `+254 700 000 000` and `254700000000` — real phone/WhatsApp number
 - `hello@example.co.ke` — real email
 - `Placeholder Shop` — exact shop/stall and landmark
