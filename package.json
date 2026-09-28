@@ -1,0 +1,10 @@
+{
+  "name": "omuwenga-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "build:blog": "node scripts/build-blog.mjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}

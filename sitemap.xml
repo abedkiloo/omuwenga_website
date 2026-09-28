@@ -12,4 +12,7 @@
   <url><loc>https://example.co.ke/guides/upholstery-materials/</loc><priority>0.7</priority></url>
   <url><loc>https://example.co.ke/guides/buying-bulk-gikomba/</loc><priority>0.7</priority></url>
   <url><loc>https://example.co.ke/contact/</loc><priority>0.8</priority></url>
+  <url><loc>https://example.co.ke/blog/</loc><priority>0.8</priority></url>
+  <!-- blog:start -->
+  <!-- blog:end -->
 </urlset>
