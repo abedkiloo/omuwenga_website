@@ -108,6 +108,21 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-dark);outline
 .page-hero .vacancy-status{margin-bottom:18px}
 @media(min-width:901px) and (max-width:1280px){.main-nav{gap:11px;font-size:.78rem}.header-inner{gap:16px}}
 @media(max-width:620px){.vacancy-card,.apply-panel{padding:22px}.vacancy-meta{grid-template-columns:1fr}.vacancy-card .button{width:100%}}
-.landing-banner{background:#071433;line-height:0}
-.landing-banner img{width:100%;height:auto}
-@media(max-width:700px){.landing-banner{overflow-x:auto;-webkit-overflow-scrolling:touch}.landing-banner img{width:760px;max-width:none}}
+.landing-banner{background:#071433;color:#fff}
+.landing-banner:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+.banner-stage{position:relative;width:min(1024px,100%);margin-inline:auto}
+.banner-viewport{position:relative;overflow:hidden;aspect-ratio:1024/352}
+.banner-track{display:flex;height:100%;transition:transform .45s ease}
+.banner-slide{position:relative;flex:0 0 100%;min-width:0;height:100%;margin:0;background:#071433}
+.banner-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center}
+.banner-control{position:absolute;top:50%;z-index:2;display:grid;place-items:center;width:44px;height:44px;margin:0;padding:0;border:0;border-radius:50%;background:rgba(7,20,51,.72);color:#fff;font-size:2rem;line-height:1;cursor:pointer;transform:translateY(-50%)}
+.banner-control:hover,.banner-control:focus-visible{background:var(--amber-dark)}
+.banner-control:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.banner-prev{left:12px}.banner-next{right:12px}
+.banner-toolbar{display:flex;justify-content:center;align-items:center;gap:14px;padding:10px 16px}
+.banner-dots{display:flex;gap:8px}
+.banner-dots button{width:10px;height:10px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.45);cursor:pointer}
+.banner-dots button[aria-selected="true"]{width:22px;background:#fff}
+.banner-dots button:focus-visible,.banner-pause:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.banner-pause{min-height:0;padding:4px 2px;border:0;background:transparent;color:#fff;font-size:.75rem;font-weight:800;letter-spacing:.04em;cursor:pointer}
+@media(max-width:700px){.banner-control{width:36px;height:36px;font-size:1.6rem}.banner-prev{left:8px}.banner-next{right:8px}}
