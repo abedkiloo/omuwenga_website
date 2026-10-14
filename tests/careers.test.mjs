@@ -124,14 +124,18 @@ test('the careers listing introduces the open role', () => {
   assert.doesNotMatch(html, /type="file"/i);
 });
 
-test('every page links to Careers from the main navigation', () => {
+test('every page uses the same main navigation', () => {
   const pages = htmlFiles(root);
   assert.ok(pages.length >= 16);
+  const expected = ['Products', 'Trade', 'About', 'Location', 'Guides', 'Blog', 'FAQ', 'Careers', 'Contact'];
   for (const file of pages) {
     const html = readFileSync(file, 'utf8');
-    const nav = html.match(/<nav class="main-nav"[\s\S]*?<\/nav>/);
+    const header = html.match(/<header class="site-header">[\s\S]*?<\/header>/);
+    assert.ok(header, path.relative(root, file));
+    const nav = header[0].match(/<nav class="main-nav"[\s\S]*?<\/nav>/);
     assert.ok(nav, path.relative(root, file));
-    assert.match(nav[0], />Careers<\/a>/);
+    assert.deepEqual([...nav[0].matchAll(/>([^<]+)<\/a>/g)].map((match) => match[1]), expected);
+    assert.match(header[0], /class="button button-small header-whatsapp"/);
   }
 });
 
