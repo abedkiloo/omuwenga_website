@@ -1,8 +1,8 @@
 /**
- * Renders the careers listing and job detail pages from vacancies.mjs.
+ * Renders the careers listing and job detail pages from vacancies.js.
  * Each block runs only when its container is on the page.
  */
-import { activeVacancies, vacancies } from "./vacancies.mjs";
+import { activeVacancies, vacancies } from "./vacancies.js";
 
 function el(tag, { className, text, href, attrs } = {}, children = []) {
   const node = document.createElement(tag);
@@ -63,13 +63,15 @@ function renderListing() {
 
   const open = activeVacancies();
   if (heading) heading.textContent = open.length === 1 ? "Current vacancy" : "Current vacancies";
-  cards.replaceChildren();
 
   if (!open.length) {
-    cards.append(paragraph("There are no open positions right now.", "live-status"));
+    cards.replaceChildren(paragraph("There are no open positions right now.", "live-status"));
     return;
   }
 
+  if (cards.querySelector(".vacancy-card")) return;
+
+  cards.replaceChildren();
   for (const job of open) cards.append(renderCard(job));
 }
 
