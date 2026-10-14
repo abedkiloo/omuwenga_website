@@ -108,3 +108,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-dark);outline
 .page-hero .vacancy-status{margin-bottom:18px}
 @media(min-width:901px) and (max-width:1280px){.main-nav{gap:11px;font-size:.78rem}.header-inner{gap:16px}}
 @media(max-width:620px){.vacancy-card,.apply-panel{padding:22px}.vacancy-meta{grid-template-columns:1fr}.vacancy-card .button{width:100%}}
+.landing-banner{background:#071433;line-height:0}
+.landing-banner img{width:100%;height:auto}
+@media(max-width:700px){.landing-banner{overflow-x:auto;-webkit-overflow-scrolling:touch}.landing-banner img{width:760px;max-width:none}}
