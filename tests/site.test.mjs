@@ -88,9 +88,9 @@ test('pages with live content load config before the module', () => {
   for (const rel of ['index.html', 'products/index.html', 'blog/index.html', 'blog/post/index.html']) {
     const html = readFileSync(path.join(root, rel), 'utf8');
     const cfg = html.indexOf('assets/js/config.js');
-    const mod = html.indexOf('assets/js/live.mjs');
+    const mod = html.indexOf('assets/js/live.js');
     assert.ok(cfg > -1 && mod > cfg, rel);
-    assert.match(html, /type="module" src="[./]*assets\/js\/live\.mjs"/);
+    assert.match(html, /type="module" src="[./]*assets\/js\/live\.js"/);
   }
 });
 
@@ -125,7 +125,7 @@ test('contact form sends enquiries through WhatsApp', () => {
   const html = read('contact/index.html');
   assert.match(html, /<form class="contact-form"[^>]*data-whatsapp-form/);
   assert.match(html, /name="business"/);
-  assert.match(html, /type="module" src="\.\.\/assets\/js\/live\.mjs"/);
+  assert.match(html, /type="module" src="\.\.\/assets\/js\/live\.js"/);
 });
 
 test('404 page is branded and kept out of the index', () => {
