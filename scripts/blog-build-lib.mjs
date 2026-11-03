@@ -24,7 +24,7 @@ export function renderPostPage(template, post, siteUrl) {
   const url = postUrl(siteUrl, post.slug);
   const title = escapeHtml(`${post.meta_title || post.title} | Omuwenga`);
   const description = escapeHtml(post.meta_description || post.excerpt || '');
-  const image = post.cover_image_url || `${siteUrl.replace(/\/+$/, '')}/assets/images/african-sofa-artisan-hero.jpg`;
+  const image = post.cover_image_url || `${siteUrl.replace(/\/+$/, '')}/assets/catalogue/cover.jpg`;
   const head = [
     '<meta name="robots" content="index,follow,max-image-preview:large">',
     '<meta name="theme-color" content="#075b9d">',

@@ -116,8 +116,8 @@ test('postCardHtml renders title, tag, date and reading time', () => {
 test('blogPostingJsonLd is valid JSON and cannot close the script tag', () => {
   const json = blogPostingJsonLd(
     { title: '</script><b>', published_at: '2026-01-01', tags: ['a', 'b'], cover_image_url: 'https://x/c.jpg' },
-    'https://example.co.ke/blog/x/',
-    'https://example.co.ke',
+    'https://omuwenga.com/blog/x/',
+    'https://omuwenga.com',
   );
   assert.doesNotMatch(json, /<\/script>/);
   const data = JSON.parse(json);

@@ -141,6 +141,6 @@ test('every page uses the same main navigation', () => {
 
 test('sitemap includes the careers URLs', () => {
   const xml = read('sitemap.xml');
-  assert.match(xml, /<loc>https:\/\/example\.co\.ke\/careers\/<\/loc>/);
-  assert.match(xml, /<loc>https:\/\/example\.co\.ke\/careers\/sales-representative\/<\/loc>/);
+  assert.match(xml, /<loc>https:\/\/omuwenga\.com\/careers\/<\/loc>/);
+  assert.match(xml, /<loc>https:\/\/omuwenga\.com\/careers\/sales-representative\/<\/loc>/);
 });

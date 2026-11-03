@@ -136,6 +136,6 @@ test('404 page is branded and kept out of the index', () => {
 
 test('sitemap lists the blog and keeps build markers', () => {
   const xml = readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  assert.match(xml, /<loc>https:\/\/example.co.ke\/blog\/<\/loc>/);
+  assert.match(xml, /<loc>https:\/\/omuwenga\.com\/blog\/<\/loc>/);
   assert.match(xml, /<!-- blog:start -->[\s\S]*<!-- blog:end -->/);
 });

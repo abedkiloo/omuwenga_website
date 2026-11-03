@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://example.co.ke/sitemap.xml
+Sitemap: https://omuwenga.com/sitemap.xml

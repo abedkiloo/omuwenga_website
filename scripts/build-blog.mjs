@@ -2,7 +2,7 @@
 /**
  * Pre-render published blog posts into static pages for search engines.
  *
- *   API_BASE=https://pos.example.co.ke SITE_URL=https://example.co.ke node scripts/build-blog.mjs
+ *   API_BASE=https://pos.example.co.ke SITE_URL=https://omuwenga.com node scripts/build-blog.mjs
  *
  * Writes blog/<slug>/index.html, blog/prerendered.json, fills the blog list
  * and refreshes the blog section of sitemap.xml. Re-run after publishing.
@@ -21,7 +21,7 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const API_BASE = process.env.API_BASE || 'http://127.0.0.1:8000';
-const SITE_URL = process.env.SITE_URL || 'https://example.co.ke';
+const SITE_URL = process.env.SITE_URL || 'https://omuwenga.com';
 
 async function getJson(url) {
   const res = await fetch(url, { headers: { Accept: 'application/json' } });

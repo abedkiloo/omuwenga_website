@@ -8,6 +8,6 @@
   var local = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
   window.OMUWENGA_CONFIG = {
     apiBase: local ? 'http://127.0.0.1:8000' : '',
-    siteUrl: 'https://example.co.ke',
+    siteUrl: 'https://omuwenga.com',
   };
 })();
