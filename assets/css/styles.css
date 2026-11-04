@@ -8,7 +8,7 @@
 [hidden]{display:none!important}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .live-status{padding:18px 20px;border:1px dashed var(--line);background:var(--cream);color:var(--muted);text-align:center}
-.catalog-section h1{font-size:clamp(1.8rem,3vw,2.2rem);margin:0 0 18px}.catalog-toolbar{display:grid;gap:14px;margin-bottom:26px}
+.catalog-section{padding:16px 0 64px}.catalog-toolbar{display:grid;gap:12px;margin-bottom:16px}.catalog-tools{display:flex;align-items:center;gap:10px}.catalog-tools .catalog-search{flex:1}@media(max-width:620px){.catalog-tools{flex-wrap:wrap}.catalog-tools .button{width:100%}}
 .catalog-search input{width:100%;max-width:520px;padding:13px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:1rem}
 .catalog-search input:focus{outline:2px solid var(--amber);outline-offset:2px}
 .chip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
