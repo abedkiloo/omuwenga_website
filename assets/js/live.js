@@ -13,12 +13,19 @@ import {
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js';
+} from './cms-core.js?v=3';
 
-const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '' };
+const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
+
+function apiHeaders(extra) {
+  const headers = { Accept: 'application/json', ...(extra || {}) };
+  const key = String(config.websiteKey || '').trim();
+  if (key) headers['X-Website-Key'] = key;
+  return headers;
+}
 
 async function getJson(path, params) {
-  const res = await fetch(apiUrl(config.apiBase, path, params), { headers: { Accept: 'application/json' } });
+  const res = await fetch(apiUrl(config.apiBase, path, params), { headers: apiHeaders() });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
@@ -195,24 +202,84 @@ async function initHomePosts(section) {
 
 async function initHomeProducts(section) {
   const list = section.querySelector('[data-home-products-list]');
+  const status = section.querySelector('[data-home-products-status]');
   try {
-    const data = await getJson('products/', { page_size: 4, has_image: 1 });
+    const data = await getJson('products/', { page_size: 12 });
     const items = data.results || [];
-    if (!items.length) return;
+    if (!items.length) {
+      setStatus(status, 'The shop list is empty right now. The picture catalogue above is still here, or send an enquiry.');
+      return;
+    }
     list.innerHTML = items.map(productCardHtml).join('');
+    const pictured = items.filter((item) => item.image_url).length;
+    setStatus(status, pictured
+      ? `${items.length} items from the shop, ${pictured} with a photo.`
+      : `${items.length} items from the shop. Photos appear here when a product has one.`);
     section.hidden = false;
   } catch {
-    /* keep hidden */
+    setStatus(status, 'The shop list is not available right now. Use the picture catalogue above, or send an enquiry.');
   }
 }
 
 /* ---------- Contact form → WhatsApp ---------- */
 
+function fillEnquiryFromQuery(form) {
+  const params = new URLSearchParams(window.location.search);
+  const interest = (params.get('interest') || '').trim();
+  const product = (params.get('product') || '').trim();
+  if (product && form.elements.product_id) form.elements.product_id.value = product;
+  if (!interest || !form.elements.interest) return;
+  const field = form.elements.interest;
+  if (field.tagName === 'SELECT') {
+    const exists = [...field.options].some((option) => option.value === interest);
+    if (!exists) {
+      const option = document.createElement('option');
+      option.value = interest;
+      option.textContent = interest;
+      field.append(option);
+    }
+  }
+  field.value = interest;
+}
+
 function initEnquiryForm(form) {
-  form.addEventListener('submit', (event) => {
+  const result = form.parentElement.querySelector('[data-enquiry-result]');
+  fillEnquiryFromQuery(form);
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const fields = Object.fromEntries(new FormData(form).entries());
-    window.open(whatsappLink(enquiryMessage(fields)), '_blank', 'noopener');
+    const button = form.querySelector('[type="submit"]');
+    if (button) button.disabled = true;
+    const payload = {
+      name: fields.name || '',
+      phone: fields.phone || '',
+      business: fields.business || '',
+      location: fields.location || '',
+      interest: fields.interest || '',
+      message: fields.message || '',
+      product_id: fields.product_id ? Number(fields.product_id) : null,
+      company_website: fields.company_website || '',
+    };
+    try {
+      const res = await fetch(apiUrl(config.apiBase, 'enquiries/'), {
+        method: 'POST',
+        headers: apiHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      form.hidden = true;
+      if (result) {
+        result.hidden = false;
+        result.innerHTML = `We have your enquiry and will review it. <a href="${escapeHtml(whatsappLink(enquiryMessage(fields)))}">Continue on WhatsApp</a> if you want a reply now.`;
+      }
+    } catch {
+      if (button) button.disabled = false;
+      if (result) {
+        result.hidden = false;
+        result.textContent = 'We could not save that just now. WhatsApp is open so the message is not lost.';
+      }
+      window.open(whatsappLink(enquiryMessage(fields)), '_blank', 'noopener');
+    }
   });
 }
 

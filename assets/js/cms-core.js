@@ -123,6 +123,14 @@ export function productEnquiry(product) {
   return `Hello Omuwenga, I am interested in ${product.name}${sku}. Is it available?`;
 }
 
+export function enquiryPageHref(product) {
+  const params = new URLSearchParams();
+  if (product?.name) params.set('interest', product.name);
+  if (product?.id) params.set('product', String(product.id));
+  const query = params.toString();
+  return query ? `/contact/?${query}` : '/contact/';
+}
+
 const ENQUIRY_FIELDS = [
   ['name', 'Name'],
   ['phone', 'Phone'],
@@ -168,7 +176,10 @@ export function productCardHtml(product) {
     <h3>${name}</h3>
     ${description ? `<p>${description}</p>` : ''}
     <div class="product-card-meta">${stock}${price ? `<strong class="product-price">${price}</strong>` : ''}</div>
-    <a class="button button-small button-whatsapp" href="${escapeHtml(whatsappLink(productEnquiry(product)))}">Ask about this</a>
+    <div class="product-card-actions">
+      <a class="button button-small" href="${escapeHtml(enquiryPageHref(product))}">Send an enquiry</a>
+      <a class="button button-small button-whatsapp" href="${escapeHtml(whatsappLink(productEnquiry(product)))}">WhatsApp</a>
+    </div>
   </div>
 </article>`;
 }

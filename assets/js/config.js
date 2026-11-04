@@ -1,13 +1,12 @@
 /*
- * Where the website reads live products and blog posts from (the CompleteBytePOS backend).
- * - Local preview: the Django dev server on port 8000.
- * - Production: set apiBase to the backend's public address, e.g. "https://pos.omuwenga.co.ke".
- *   Leave it empty when the backend is served from the same domain under /api/.
+ * Production API on 193.37.213.177. The hostname is api.omuwenga.com.
+ * UAT is a different database: https://api.uat.omuwenga.com — do not use it here.
+ * websiteKey must match WEBSITE_API_KEY on the backend. The site sends it as X-Website-Key.
  */
 (function () {
-  var local = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
   window.OMUWENGA_CONFIG = {
-    apiBase: local ? 'http://127.0.0.1:8000' : '',
+    apiBase: 'https://api.omuwenga.com',
     siteUrl: 'https://omuwenga.com',
+    websiteKey: 'oB0w6YSOopN_8mykSDtvaeBoNopwT2omm2ByoJQ9hOk',
   };
 })();
