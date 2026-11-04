@@ -1,7 +1,7 @@
 /*
  * Production API on 193.37.213.177. The hostname is api.omuwenga.com.
  * UAT is a different database: https://api.uat.omuwenga.com — do not use it here.
- * websiteKey must match WEBSITE_API_KEY on the backend. The site sends it as X-Website-Key.
+ * websiteKey must match WEBSITE_API_KEY on the backend. The site sends it as Authorization: Bearer.
  */
 (function () {
   window.OMUWENGA_CONFIG = {

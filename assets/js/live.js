@@ -20,7 +20,7 @@ const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey:
 function apiHeaders(extra) {
   const headers = { Accept: 'application/json', ...(extra || {}) };
   const key = String(config.websiteKey || '').trim();
-  if (key) headers['X-Website-Key'] = key;
+  if (key) headers.Authorization = `Bearer ${key}`;
   return headers;
 }
 
@@ -65,20 +65,20 @@ function initCatalog(root) {
     try {
       const data = await getJson('products/', {
         page: state.page,
-        page_size: 24,
+        page_size: 100,
         category: state.category,
         search: state.search,
       });
       const items = data.results || [];
       const html = items.map(productCardHtml).join('');
       grid.innerHTML = append ? grid.innerHTML + html : html;
-      setStatus(status, items.length || append ? '' : 'No products match your search yet — ask us on WhatsApp, we may still have it.');
+      setStatus(status, items.length || append ? '' : 'No products match.');
       more.hidden = !data.next;
       root.hidden = false;
     } catch {
       if (!append) {
         grid.innerHTML = '';
-        setStatus(status, 'Live stock is not available right now. Browse the categories below or ask us on WhatsApp.');
+        setStatus(status, 'Products could not be loaded.');
       }
       more.hidden = true;
     } finally {
