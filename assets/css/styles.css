@@ -134,7 +134,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-dark);outline
 @media(max-width:700px){.banner-control{width:36px;height:36px;font-size:1.6rem}.banner-prev{left:8px}.banner-next{right:8px}}
 .catalogue-feature{display:grid;gap:28px;align-items:center}
 .catalogue-feature img,.catalogue-pages img{width:100%;height:auto;object-fit:contain;background:#fff;border-radius:16px}
-.catalogue-pages{display:grid;gap:28px;max-width:820px;margin-inline:auto}
+.catalogue-hero{padding:16px 0 0}.catalogue-hero + .section{padding-top:16px}.catalogue-pages{display:grid;gap:28px;max-width:820px;margin-inline:auto}
 .catalogue-pages figcaption{margin:8px 0 0;font-size:.9rem}
 @media(min-width:800px){.catalogue-feature{grid-template-columns:minmax(180px,280px) 1fr}}
 
