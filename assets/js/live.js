@@ -13,7 +13,7 @@ import {
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js?v=9';
+} from './cms-core.js?v=10';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -286,7 +286,8 @@ function initEnquiryForm(form) {
 function initProductZoom() {
   const dialog = document.createElement('dialog');
   dialog.className = 'zoom-view';
-  dialog.innerHTML = `<div class="zoom-bar"><p class="zoom-title"></p><div class="zoom-controls"><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-stage"><img alt=""></div>`;
+  dialog.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;max-width:100vw;max-height:100vh;margin:0;padding:0;border:0;background:#111;color:#fff;overflow:hidden';
+  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:#1c2430"><p class="zoom-title" style="margin:0;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:8px"><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-stage" style="height:calc(100% - 56px);display:grid;place-items:center;overflow:hidden"><img alt="" style="max-width:100%;max-height:100%;object-fit:contain"></div>`;
   document.body.append(dialog);
   const title = dialog.querySelector('.zoom-title');
   const stage = dialog.querySelector('.zoom-stage');

@@ -180,7 +180,7 @@ export function productCardHtml(product) {
   const description = product.description ? escapeHtml(product.description).slice(0, 140) : '';
   const imageUrl = escapeHtml(product.image_url || '');
   const image = imageUrl
-    ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}" aria-label="Enlarge ${name}"><img src="${imageUrl}" alt="${name}" loading="lazy" width="400" height="300"></button>`
+    ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}" aria-label="Enlarge ${name}" style="border:0;background:transparent;padding:0"><img src="${imageUrl}" alt="${name}" loading="lazy" width="400" height="300"></button>`
     : `<span class="product-card-fallback" aria-hidden="true">${escapeHtml(initials(product.name))}</span>`;
   const price = formatPrice(product.price);
   const stock = product.in_stock
@@ -190,12 +190,12 @@ export function productCardHtml(product) {
   <div class="product-card-media">${image}</div>
   <div class="product-card-body">
     ${category ? `<span class="product-card-category">${escapeHtml(category)}</span>` : ''}
-    <h3>${imageUrl ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}">${name}</button>` : name}</h3>
+    <h3>${imageUrl ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}" style="border:0;background:transparent;padding:0;font:inherit;color:inherit">${name}</button>` : name}</h3>
     ${description ? `<p>${description}</p>` : ''}
     <div class="product-card-meta">${stock}${price ? `<strong class="product-price">${price}</strong>` : ''}</div>
     <div class="product-card-actions">
-      <a class="order-wa" href="${escapeHtml(whatsappLink(productEnquiry(product)))}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10.1 10.1 0 0 0 4.65 1.13h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.76 13.9c-.24.68-1.2 1.24-1.96 1.4-.52.11-1.2.2-3.48-.75-2.92-1.21-4.8-4.18-4.95-4.37-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.26-.29.58-.36.77-.36h.55c.18 0 .42-.07.66.5.24.58.83 2 .9 2.15.07.14.12.32.02.51-.1.2-.14.32-.28.49-.14.17-.3.38-.42.51-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.17-.2.7-.81.88-1.09.19-.28.37-.23.62-.14.26.09 1.63.77 1.91.91.28.14.46.21.53.32.07.12.07.68-.17 1.36z"/></svg>Order on WhatsApp</a>
-      <a class="order-enquiry" href="${escapeHtml(enquiryPageHref(product))}">Enquiry</a>
+      <a class="button button-small button-whatsapp order-wa" style="display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:999px;background:#25d366;border:2px solid #128c4a;color:#fff;font-size:.75rem;font-weight:800;text-decoration:none" href="${escapeHtml(whatsappLink(productEnquiry(product)))}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10.1 10.1 0 0 0 4.65 1.13h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.76 13.9c-.24.68-1.2 1.24-1.96 1.4-.52.11-1.2.2-3.48-.75-2.92-1.21-4.8-4.18-4.95-4.37-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.26-.29.58-.36.77-.36h.55c.18 0 .42-.07.66.5.24.58.83 2 .9 2.15.07.14.12.32.02.51-.1.2-.14.32-.28.49-.14.17-.3.38-.42.51-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.17-.2.7-.81.88-1.09.19-.28.37-.23.62-.14.26.09 1.63.77 1.91.91.28.14.46.21.53.32.07.12.07.68-.17 1.36z"/></svg>Order on WhatsApp</a>
+      <a class="button button-small button-outline order-enquiry" style="display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:999px;background:#fff;border:2px solid #075b9d;color:#075b9d;font-size:.75rem;font-weight:800;text-decoration:none" href="${escapeHtml(enquiryPageHref(product))}">Enquiry</a>
     </div>
   </div>
 </article>`;
