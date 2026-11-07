@@ -13,7 +13,7 @@ import {
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js?v=3';
+} from './cms-core.js?v=8';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -282,6 +282,98 @@ function initEnquiryForm(form) {
     }
   });
 }
+
+function initProductZoom() {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'zoom-view';
+  dialog.innerHTML = `<div class="zoom-bar"><p class="zoom-title"></p><div class="zoom-controls"><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-stage"><img alt=""></div>`;
+  document.body.append(dialog);
+  const title = dialog.querySelector('.zoom-title');
+  const stage = dialog.querySelector('.zoom-stage');
+  const img = stage.querySelector('img');
+  const view = { scale: 1, x: 0, y: 0, drag: null, moved: false };
+
+  function paint() {
+    img.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.scale})`;
+    stage.classList.toggle('is-zoomed', view.scale > 1);
+  }
+
+  function reset() {
+    view.scale = 1;
+    view.x = 0;
+    view.y = 0;
+    paint();
+  }
+
+  function clampScale(value) {
+    return Math.min(4, Math.max(1, value));
+  }
+
+  dialog.querySelector('[data-zoom-close]').addEventListener('click', () => dialog.close());
+  dialog.querySelector('[data-zoom-in]').addEventListener('click', () => {
+    view.scale = clampScale(view.scale + 0.5);
+    paint();
+  });
+  dialog.querySelector('[data-zoom-out]').addEventListener('click', () => {
+    view.scale = clampScale(view.scale - 0.5);
+    if (view.scale === 1) reset();
+    else paint();
+  });
+  dialog.addEventListener('close', reset);
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  stage.addEventListener('click', (event) => {
+    if (event.target.closest('button') || view.moved) {
+      view.moved = false;
+      return;
+    }
+    if (view.scale > 1) {
+      reset();
+      return;
+    }
+    const rect = stage.getBoundingClientRect();
+    view.scale = 2.5;
+    view.x = (rect.width / 2 - (event.clientX - rect.left)) * 0.6;
+    view.y = (rect.height / 2 - (event.clientY - rect.top)) * 0.6;
+    paint();
+  });
+  stage.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    view.scale = clampScale(view.scale + (event.deltaY < 0 ? 0.25 : -0.25));
+    if (view.scale === 1) reset();
+    else paint();
+  }, { passive: false });
+  stage.addEventListener('pointerdown', (event) => {
+    if (view.scale <= 1 || event.target.closest('button')) return;
+    view.drag = { id: event.pointerId, x: event.clientX - view.x, y: event.clientY - view.y };
+    stage.setPointerCapture(event.pointerId);
+  });
+  stage.addEventListener('pointermove', (event) => {
+    if (!view.drag || view.drag.id !== event.pointerId) return;
+    const nextX = event.clientX - view.drag.x;
+    const nextY = event.clientY - view.drag.y;
+    if (Math.abs(nextX - view.x) + Math.abs(nextY - view.y) > 3) view.moved = true;
+    view.x = nextX;
+    view.y = nextY;
+    paint();
+  });
+  stage.addEventListener('pointerup', () => {
+    view.drag = null;
+  });
+
+  document.addEventListener('click', (event) => {
+    const opener = event.target.closest('[data-zoom-src]');
+    if (!opener) return;
+    title.textContent = opener.dataset.zoomName || '';
+    img.alt = opener.dataset.zoomName || '';
+    img.src = opener.dataset.zoomSrc;
+    reset();
+    if (!dialog.open) dialog.showModal();
+  });
+}
+
+initProductZoom();
 
 const catalog = document.querySelector('[data-catalog]');
 if (catalog) initCatalog(catalog);

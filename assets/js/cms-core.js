@@ -162,8 +162,9 @@ export function productCardHtml(product) {
   const name = escapeHtml(product.name);
   const category = product.subcategory?.name || product.category?.name || '';
   const description = product.description ? escapeHtml(product.description).slice(0, 140) : '';
-  const image = product.image_url
-    ? `<img src="${escapeHtml(product.image_url)}" alt="${name}" loading="lazy" width="400" height="300">`
+  const imageUrl = escapeHtml(product.image_url || '');
+  const image = imageUrl
+    ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}" aria-label="Enlarge ${name}"><img src="${imageUrl}" alt="${name}" loading="lazy" width="400" height="300"></button>`
     : `<span class="product-card-fallback" aria-hidden="true">${escapeHtml(initials(product.name))}</span>`;
   const price = formatPrice(product.price);
   const stock = product.in_stock
@@ -173,7 +174,7 @@ export function productCardHtml(product) {
   <div class="product-card-media">${image}</div>
   <div class="product-card-body">
     ${category ? `<span class="product-card-category">${escapeHtml(category)}</span>` : ''}
-    <h3>${name}</h3>
+    <h3>${imageUrl ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}">${name}</button>` : name}</h3>
     ${description ? `<p>${description}</p>` : ''}
     <div class="product-card-meta">${stock}${price ? `<strong class="product-price">${price}</strong>` : ''}</div>
     <div class="product-card-actions">
