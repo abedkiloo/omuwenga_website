@@ -13,7 +13,7 @@ import {
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js?v=8';
+} from './cms-core.js?v=9';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 

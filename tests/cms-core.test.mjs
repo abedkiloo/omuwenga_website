@@ -75,7 +75,10 @@ test('formatPrice and WhatsApp links', () => {
   assert.equal(formatPrice('1250.00'), 'KSh 1,250');
   assert.equal(formatPrice(undefined), '');
   assert.equal(whatsappLink('Hi & bye'), 'https://wa.me/254718515142?text=Hi%20%26%20bye');
-  assert.match(productEnquiry({ name: 'No. 5 zipper', sku: 'Z5' }), /No\. 5 zipper \(Z5\)/);
+  assert.match(productEnquiry({ name: 'No. 5 zipper', sku: 'Z5' }), /looking at the No\. 5 zipper/);
+  assert.match(productEnquiry({ name: '  Trophy   stand  ' }), /the Trophy stand on your website/);
+  assert.match(productEnquiry({}), /this item/);
+  assert.match(productEnquiry({ name: 'Zip' }), /quote for \[ \] pieces/);
 });
 
 test('productCardHtml escapes data, shows stock, price and fallback image', () => {

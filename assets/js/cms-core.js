@@ -118,9 +118,25 @@ export function whatsappLink(message, number = BUSINESS.whatsapp) {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Build the prefilled WhatsApp quote for one product.
+ *
+ * Args:
+ *   product (object): Catalog row. Uses `name` (string). Blank or missing
+ *     names become "this item". Whitespace is collapsed and the name is
+ *     capped at 120 characters.
+ *
+ * Returns:
+ *   string: One sentence naming the product and leaving `[ ]` for the
+ *     quantity. A normal name keeps the whole message under 200 characters.
+ *
+ * Raises:
+ *   Nothing. A missing product is treated as an unnamed item.
+ */
 export function productEnquiry(product) {
-  const sku = product.sku ? ` (${product.sku})` : '';
-  return `Hello Omuwenga, I am interested in ${product.name}${sku}. Is it available?`;
+  const raw = String(product?.name || '').replace(/\s+/g, ' ').trim();
+  const name = raw.slice(0, 120) || 'this item';
+  return `Hi Omuwenga, I am looking at the ${name} on your website and would like a quote for [ ] pieces.`;
 }
 
 export function enquiryPageHref(product) {
@@ -178,8 +194,8 @@ export function productCardHtml(product) {
     ${description ? `<p>${description}</p>` : ''}
     <div class="product-card-meta">${stock}${price ? `<strong class="product-price">${price}</strong>` : ''}</div>
     <div class="product-card-actions">
-      <a class="button button-small" href="${escapeHtml(enquiryPageHref(product))}">Send an enquiry</a>
-      <a class="button button-small button-whatsapp" href="${escapeHtml(whatsappLink(productEnquiry(product)))}">WhatsApp</a>
+      <a class="order-wa" href="${escapeHtml(whatsappLink(productEnquiry(product)))}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10.1 10.1 0 0 0 4.65 1.13h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.76 13.9c-.24.68-1.2 1.24-1.96 1.4-.52.11-1.2.2-3.48-.75-2.92-1.21-4.8-4.18-4.95-4.37-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.26-.29.58-.36.77-.36h.55c.18 0 .42-.07.66.5.24.58.83 2 .9 2.15.07.14.12.32.02.51-.1.2-.14.32-.28.49-.14.17-.3.38-.42.51-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.17-.2.7-.81.88-1.09.19-.28.37-.23.62-.14.26.09 1.63.77 1.91.91.28.14.46.21.53.32.07.12.07.68-.17 1.36z"/></svg>Order on WhatsApp</a>
+      <a class="order-enquiry" href="${escapeHtml(enquiryPageHref(product))}">Enquiry</a>
     </div>
   </div>
 </article>`;
