@@ -13,7 +13,7 @@ import {
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js?v=10';
+} from './cms-core.js?v=11';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -286,8 +286,8 @@ function initEnquiryForm(form) {
 function initProductZoom() {
   const dialog = document.createElement('dialog');
   dialog.className = 'zoom-view';
-  dialog.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;max-width:100vw;max-height:100vh;margin:0;padding:0;border:0;background:#111;color:#fff;overflow:hidden';
-  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:#1c2430"><p class="zoom-title" style="margin:0;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:8px"><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-stage" style="height:calc(100% - 56px);display:grid;place-items:center;overflow:hidden"><img alt="" style="max-width:100%;max-height:100%;object-fit:contain"></div>`;
+  dialog.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 28px));height:auto;max-width:min(520px,calc(100vw - 28px));max-height:min(72vh,640px);margin:0;padding:0;border:0;border-radius:16px;background:#fff;color:#1c2430;overflow:hidden';
+  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:#1c2430;color:#fff"><p class="zoom-title" style="margin:0;font-size:.92rem;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:6px"><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-stage" style="display:grid;place-items:center;overflow:hidden;padding:12px;background:#f6f3ee"><img alt="" style="width:auto;height:auto;max-width:100%;max-height:min(50vh,420px);object-fit:contain"></div>`;
   document.body.append(dialog);
   const title = dialog.querySelector('.zoom-title');
   const stage = dialog.querySelector('.zoom-stage');
