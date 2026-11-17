@@ -13,7 +13,7 @@ import {
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js?v=11';
+} from './cms-core.js?v=12';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -55,8 +55,18 @@ function initCatalog(root) {
   const chips = root.querySelector('[data-catalog-categories]');
   const search = root.querySelector('[data-catalog-search]');
   const more = root.querySelector('[data-catalog-more]');
+  const match = (root.dataset.catalogMatch || '')
+    .split(',')
+    .map((word) => word.trim().toLowerCase())
+    .filter(Boolean);
   const state = { category: '', search: '', page: 1, loading: false };
   let timer;
+
+  function matches(item) {
+    if (!match.length) return true;
+    const hay = `${item.name || ''} ${item.category?.name || ''} ${item.subcategory?.name || ''}`.toLowerCase();
+    return match.some((word) => hay.includes(word));
+  }
 
   async function load({ append = false } = {}) {
     if (state.loading) return;
@@ -69,54 +79,66 @@ function initCatalog(root) {
         category: state.category,
         search: state.search,
       });
-      const items = data.results || [];
+      const items = (data.results || []).filter(matches);
       const html = items.map(productCardHtml).join('');
       grid.innerHTML = append ? grid.innerHTML + html : html;
       setStatus(status, items.length || append ? '' : 'No products match.');
-      more.hidden = !data.next;
+      if (more) more.hidden = match.length ? true : !data.next;
       root.hidden = false;
     } catch {
       if (!append) {
         grid.innerHTML = '';
         setStatus(status, 'Products could not be loaded.');
       }
-      more.hidden = true;
+      if (more) more.hidden = true;
     } finally {
       state.loading = false;
     }
   }
 
   function renderChips(categories) {
+    if (!chips) return;
     const all = [{ id: '', name: 'All products' }, ...categories];
     chips.innerHTML = all
       .map((c) => `<button type="button" class="chip${String(c.id) === state.category ? ' active' : ''}" data-id="${escapeHtml(c.id)}">${escapeHtml(c.name)}${c.product_count ? ` <span>${c.product_count}</span>` : ''}</button>`)
       .join('');
   }
 
-  chips.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-id]');
-    if (!btn) return;
-    state.category = btn.dataset.id;
-    state.page = 1;
-    chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('active', c === btn));
-    load();
-  });
-
-  search.addEventListener('input', () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      state.search = search.value.trim();
+  if (chips) {
+    chips.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-id]');
+      if (!btn) return;
+      state.category = btn.dataset.id;
       state.page = 1;
+      chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('active', c === btn));
       load();
-    }, 300);
-  });
+    });
+    getJson('categories/').then(renderChips).catch(() => renderChips([]));
+  }
 
-  more.addEventListener('click', () => {
-    state.page += 1;
-    load({ append: true });
-  });
+  if (search) {
+    const initial = new URLSearchParams(window.location.search).get('q');
+    if (initial && initial.trim()) {
+      search.value = initial.trim();
+      state.search = initial.trim();
+    }
+    search.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        state.search = search.value.trim();
+        state.page = 1;
+        load();
+      }, 300);
+    });
+  }
 
-  getJson('categories/').then(renderChips).catch(() => renderChips([]));
+  if (more) {
+    more.addEventListener('click', () => {
+      state.page += 1;
+      load({ append: true });
+    });
+  }
+
   load();
 }
 

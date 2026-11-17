@@ -70,7 +70,7 @@ for (const page of pages) {
   });
 
   test(`${page.rel}: navigation includes the blog`, () => {
-    assert.match(page.html, /<nav class="main-nav"[^>]*>.*>Blog<\/a>.*<\/nav>/s);
+    assert.match(page.html, /<nav class="main-nav"[^>]*>.*>Guides<\/a>.*<\/nav>/s);
   });
 
   test(`${page.rel}: internal links and assets exist`, () => {

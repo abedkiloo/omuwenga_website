@@ -104,3 +104,10 @@ if (carousel) {
   show(0);
   start();
 }
+
+const header = document.querySelector(".site-header");
+if (header) {
+  const paintHeader = () => header.classList.toggle("is-solid", window.scrollY > 24);
+  paintHeader();
+  window.addEventListener("scroll", paintHeader, { passive: true });
+}

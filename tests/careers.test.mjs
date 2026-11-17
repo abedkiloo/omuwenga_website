@@ -127,7 +127,7 @@ test('the careers listing introduces the open role', () => {
 test('every page uses the same main navigation', () => {
   const pages = htmlFiles(root);
   assert.ok(pages.length >= 16);
-  const expected = ['Products', 'Catalogue', 'Trade', 'About', 'Location', 'Guides', 'Blog', 'FAQ', 'Careers', 'Contact'];
+  const expected = ['Home', 'About Us', 'Products', 'Zippers and sliders', 'Sofa stands', 'Piping and lipping', 'Hook and loop', 'Webbing', 'Handles and castors', 'Catalogue', 'Our Work', 'Guides', 'Contact'];
   for (const file of pages) {
     const html = readFileSync(file, 'utf8');
     const header = html.match(/<header class="site-header">[\s\S]*?<\/header>/);

@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://omuwenga.com/</loc><priority>1.0</priority></url>
-  <url><loc>https://omuwenga.com/products/</loc><priority>0.9</priority></url>
-  <url><loc>https://omuwenga.com/catalogue/</loc><priority>0.8</priority></url>
-  <url><loc>https://omuwenga.com/wholesale/</loc><priority>0.8</priority></url>
-  <url><loc>https://omuwenga.com/about/</loc><priority>0.7</priority></url>
-  <url><loc>https://omuwenga.com/location/</loc><priority>0.8</priority></url>
-  <url><loc>https://omuwenga.com/faq/</loc><priority>0.7</priority></url>
-  <url><loc>https://omuwenga.com/guides/</loc><priority>0.8</priority></url>
-  <url><loc>https://omuwenga.com/guides/choose-sofa-stand/</loc><priority>0.7</priority></url>
-  <url><loc>https://omuwenga.com/guides/zipper-sizes/</loc><priority>0.7</priority></url>
-  <url><loc>https://omuwenga.com/guides/upholstery-materials/</loc><priority>0.7</priority></url>
-  <url><loc>https://omuwenga.com/guides/buying-bulk-gikomba/</loc><priority>0.7</priority></url>
-  <url><loc>https://omuwenga.com/contact/</loc><priority>0.8</priority></url>
-  <url><loc>https://omuwenga.com/careers/</loc><priority>0.6</priority></url>
-  <url><loc>https://omuwenga.com/careers/sales-representative/</loc><priority>0.5</priority></url>
-  <url><loc>https://omuwenga.com/blog/</loc><priority>0.8</priority></url>
+  <url><loc>https://omuwenga.com/</loc><lastmod>2026-11-11</lastmod><priority>1.0</priority></url>
+  <url><loc>https://omuwenga.com/products/</loc><lastmod>2026-11-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://omuwenga.com/catalogue/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://omuwenga.com/wholesale/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://omuwenga.com/about/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/location/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://omuwenga.com/faq/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/guides/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://omuwenga.com/guides/choose-sofa-stand/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/guides/zipper-sizes/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/guides/upholstery-materials/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/guides/buying-bulk-gikomba/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/contact/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://omuwenga.com/products/zippers/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/products/sofa-stands/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/products/piping/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/products/hook-and-loop/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/products/webbing/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/products/hardware/</loc><lastmod>2026-11-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://omuwenga.com/work/</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
+  <url><loc>https://omuwenga.com/privacy/</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://omuwenga.com/terms/</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://omuwenga.com/careers/</loc><lastmod>2026-11-11</lastmod><priority>0.6</priority></url>
+  <url><loc>https://omuwenga.com/careers/sales-representative/</loc><lastmod>2026-11-11</lastmod><priority>0.5</priority></url>
+  <url><loc>https://omuwenga.com/blog/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <!-- blog:start -->
   <!-- blog:end -->
 </urlset>
