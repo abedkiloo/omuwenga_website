@@ -18,8 +18,15 @@
 .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .product-card{display:flex;flex-direction:column;border:1px solid var(--line);background:#fff;transition:.2s}
 .product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.product-card-media{aspect-ratio:4/3;background:linear-gradient(135deg,var(--cream),#dceefa);display:grid;place-items:center;overflow:hidden}
+.product-card-media{position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,var(--cream),#dceefa);display:grid;overflow:hidden}
 .product-card-media img{width:100%;height:100%;object-fit:contain;background:#f6f3ee}
+.product-slider{position:relative;width:100%;height:100%;min-height:0}
+.product-slider-track{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.product-slider-track::-webkit-scrollbar{display:none}
+.product-slider-track .product-open{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start}
+.product-slider-nav{position:absolute;top:50%;z-index:2;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:999px;background:rgba(28,36,48,.72);color:#fff;font-size:1.35rem;line-height:1;cursor:pointer}
+.product-slider-nav.prev{left:8px}
+.product-slider-nav.next{right:8px}
 .product-open{display:block;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in;font:inherit;color:inherit;text-align:left;appearance:none}
 .product-card-body h3 .product-open{height:auto;cursor:zoom-in}
 .zoom-view{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 28px));height:auto;max-width:min(520px,calc(100vw - 28px));max-height:min(72vh,640px);margin:0;padding:0;border:0;border-radius:16px;background:#fff;color:#1c2430;overflow:hidden}
@@ -42,7 +49,7 @@
 .form-result{margin:16px 0 0;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff}
 .form-result a{color:#075b9d;font-weight:800}
 .shop-live{padding-top:24px}
-.product-card-fallback{font:700 2.2rem Georgia;color:var(--amber-dark);opacity:.55}
+.product-card-fallback{display:grid;place-items:center;height:100%;font:700 2.2rem Georgia;color:var(--amber-dark);opacity:.55}
 .product-card-body{display:flex;flex:1;flex-direction:column;gap:8px;padding:16px}
 .product-card-body h3{margin:0;font-size:1.08rem}
 .product-card-body p{margin:0;color:var(--muted);font-size:.86rem}

@@ -174,13 +174,41 @@ function initials(name) {
     .join('');
 }
 
+/** Featured photo first, then the other views. At most four safe image URLs. */
+export function productImageUrls(product) {
+  const rows = Array.isArray(product?.images) ? product.images.slice(0, 8) : [];
+  const urls = [];
+  const push = (value) => {
+    const safe = safeUrl(value);
+    if (!safe || urls.includes(safe) || urls.length >= 4) return;
+    urls.push(safe);
+  };
+  const featured = rows.find((row) => row && row.is_featured);
+  push(featured?.url || product?.image_url);
+  rows
+    .slice()
+    .sort((a, b) => Number(a?.slot || 99) - Number(b?.slot || 99))
+    .forEach((row) => push(row?.url));
+  push(product?.image_url);
+  return urls;
+}
+
 export function productCardHtml(product) {
   const name = escapeHtml(product.name);
   const category = product.subcategory?.name || product.category?.name || '';
   const description = product.description ? escapeHtml(product.description).slice(0, 140) : '';
-  const imageUrl = escapeHtml(product.image_url || '');
-  const image = imageUrl
-    ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}" aria-label="Enlarge ${name}" style="border:0;background:transparent;padding:0"><img src="${imageUrl}" alt="${name}" loading="lazy" width="400" height="300"></button>`
+  const gallery = productImageUrls(product);
+  const imageUrl = escapeHtml(gallery[0] || '');
+  const slides = gallery.map((url, index) => {
+    const src = escapeHtml(url);
+    const label = index === 0 ? `Enlarge ${name}` : `View ${index + 1} of ${name}`;
+    return `<button type="button" class="product-open" data-zoom-src="${src}" data-zoom-name="${name}" aria-label="${label}"><img src="${src}" alt="${index === 0 ? name : ''}" loading="lazy" width="400" height="300"></button>`;
+  }).join('');
+  const controls = gallery.length > 1
+    ? `<button type="button" class="product-slider-nav prev" data-slider-step="-1" aria-label="Previous photo">‹</button><button type="button" class="product-slider-nav next" data-slider-step="1" aria-label="Next photo">›</button>`
+    : '';
+  const image = gallery.length
+    ? `<div class="product-slider">${controls}<div class="product-slider-track">${slides}</div></div>`
     : `<span class="product-card-fallback" aria-hidden="true">${escapeHtml(initials(product.name))}</span>`;
   const price = formatPrice(product.price);
   const stock = product.in_stock

@@ -9,6 +9,7 @@ import {
   postCardHtml,
   postHref,
   productCardHtml,
+  productImageUrls,
   productEnquiry,
   renderMarkdown,
   safeUrl,
@@ -95,6 +96,29 @@ test('productCardHtml escapes data, shows stock, price and fallback image', () =
 
   const withImage = productCardHtml({ name: 'Zip', in_stock: true, image_url: 'https://x/y.jpg', subcategory: { name: 'No. 5' } });
   assert.match(withImage, /<img src="https:\/\/x\/y.jpg" alt="Zip"/);
+  const views = productCardHtml({
+    name: 'Zip',
+    in_stock: true,
+    image_url: 'https://x/featured.jpg',
+    images: [
+      { slot: 1, url: 'https://x/featured.jpg', is_featured: true },
+      { slot: 2, url: 'https://x/side.jpg', is_featured: false },
+    ],
+  });
+  assert.match(views, /featured\.jpg/);
+  assert.match(views, /side\.jpg/);
+  assert.match(views, /View 2 of Zip/);
+  assert.match(views, /product-slider-nav/);
+  assert.doesNotMatch(withImage, /product-slider-nav/);
+  const ordered = productImageUrls({
+    image_url: 'https://x/front.jpg',
+    images: [
+      { slot: 1, url: 'https://x/front.jpg', is_featured: false },
+      { slot: 3, url: 'javascript:alert(1)', is_featured: false },
+      { slot: 2, url: 'https://x/back.jpg', is_featured: true },
+    ],
+  });
+  assert.deepEqual(ordered, ['https://x/back.jpg', 'https://x/front.jpg']);
   assert.match(withImage, /Available/);
   assert.match(withImage, /No\. 5/);
   assert.doesNotMatch(withImage, /product-price/);

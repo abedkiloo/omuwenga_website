@@ -309,12 +309,19 @@ function initProductZoom() {
   const dialog = document.createElement('dialog');
   dialog.className = 'zoom-view';
   dialog.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 28px));height:auto;max-width:min(520px,calc(100vw - 28px));max-height:min(72vh,640px);margin:0;padding:0;border:0;border-radius:16px;background:#fff;color:#1c2430;overflow:hidden';
-  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:#1c2430;color:#fff"><p class="zoom-title" style="margin:0;font-size:.92rem;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:6px"><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-stage" style="display:grid;place-items:center;overflow:hidden;padding:12px;background:#f6f3ee"><img alt="" style="width:auto;height:auto;max-width:100%;max-height:min(50vh,420px);object-fit:contain"></div>`;
+  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:#1c2430;color:#fff"><p class="zoom-title" style="margin:0;font-size:.92rem;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:6px"><button type="button" data-zoom-prev aria-label="Previous photo">‹</button><button type="button" data-zoom-next aria-label="Next photo">›</button><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-views" style="display:flex;gap:6px;padding:8px;background:#fff"></div><div class="zoom-stage" style="display:grid;place-items:center;overflow:hidden;padding:12px;background:#f6f3ee"><img alt="" style="width:auto;height:auto;max-width:100%;max-height:min(50vh,420px);object-fit:contain"></div>`;
   document.body.append(dialog);
   const title = dialog.querySelector('.zoom-title');
   const stage = dialog.querySelector('.zoom-stage');
   const img = stage.querySelector('img');
-  const view = { scale: 1, x: 0, y: 0, drag: null, moved: false };
+  const view = { scale: 1, x: 0, y: 0, drag: null, moved: false, gallery: [], index: 0 };
+
+  function showGallery(index) {
+    if (!view.gallery.length) return;
+    view.index = (index + view.gallery.length) % view.gallery.length;
+    img.src = view.gallery[view.index];
+    reset();
+  }
 
   function paint() {
     img.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.scale})`;
@@ -333,6 +340,8 @@ function initProductZoom() {
   }
 
   dialog.querySelector('[data-zoom-close]').addEventListener('click', () => dialog.close());
+  dialog.querySelector('[data-zoom-prev]').addEventListener('click', () => showGallery(view.index - 1));
+  dialog.querySelector('[data-zoom-next]').addEventListener('click', () => showGallery(view.index + 1));
   dialog.querySelector('[data-zoom-in]').addEventListener('click', () => {
     view.scale = clampScale(view.scale + 0.5);
     paint();
@@ -386,11 +395,38 @@ function initProductZoom() {
   });
 
   document.addEventListener('click', (event) => {
+    const step = event.target.closest('[data-slider-step]');
+    if (step) {
+      event.preventDefault();
+      const track = step.closest('.product-slider')?.querySelector('.product-slider-track');
+      if (track) {
+        const width = track.clientWidth || 1;
+        track.scrollBy({ left: Number(step.dataset.sliderStep) * width, behavior: 'smooth' });
+      }
+      return;
+    }
     const opener = event.target.closest('[data-zoom-src]');
     if (!opener) return;
     title.textContent = opener.dataset.zoomName || '';
     img.alt = opener.dataset.zoomName || '';
     img.src = opener.dataset.zoomSrc;
+    const views = dialog.querySelector('.zoom-views');
+    const card = opener.closest('.product-card');
+    const sources = card
+      ? [...card.querySelectorAll('[data-zoom-src]')].map((node) => node.dataset.zoomSrc).filter(Boolean)
+      : [opener.dataset.zoomSrc];
+    const unique = [...new Set(sources)].slice(0, 4);
+    view.gallery = unique;
+    view.index = Math.max(0, unique.indexOf(opener.dataset.zoomSrc));
+    views.innerHTML = unique.length > 1
+      ? unique.map((src) => `<button type="button" data-zoom-pick="${src}" style="border:1px solid #d9d3c7;padding:0;background:#fff"><img src="${src}" alt="" width="48" height="48"></button>`).join('')
+      : '';
+    views.querySelectorAll('[data-zoom-pick]').forEach((button) => {
+      button.addEventListener('click', () => {
+        img.src = button.dataset.zoomPick;
+        reset();
+      });
+    });
     reset();
     if (!dialog.open) dialog.showModal();
   });
