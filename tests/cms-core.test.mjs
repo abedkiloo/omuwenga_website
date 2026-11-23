@@ -5,7 +5,10 @@ import {
   blogPostingJsonLd,
   enquiryMessage,
   escapeHtml,
+  featuredProductCardHtml,
   formatPrice,
+  HOME_FEATURED_PAGE_SIZE,
+  homeFeaturedHasMore,
   postCardHtml,
   postHref,
   productCardHtml,
@@ -122,6 +125,26 @@ test('productCardHtml escapes data, shows stock, price and fallback image', () =
   assert.match(withImage, /Available/);
   assert.match(withImage, /No\. 5/);
   assert.doesNotMatch(withImage, /product-price/);
+});
+
+test('home featured page size is six and cards stay compact', () => {
+  assert.equal(HOME_FEATURED_PAGE_SIZE, 6);
+  assert.equal(homeFeaturedHasMore({ next: 'https://api.example/page=2' }), true);
+  assert.equal(homeFeaturedHasMore({ next: null }), false);
+  assert.equal(homeFeaturedHasMore(null), false);
+  const html = featuredProductCardHtml({
+    name: 'Rose stand <x>',
+    price: 1250,
+    category: { name: 'Sofa stands' },
+    image_url: 'https://cdn.example/stand.jpg',
+  });
+  assert.match(html, /luxe-product-card/);
+  assert.match(html, /Rose stand &lt;x&gt;/);
+  assert.match(html, /Sofa stands/);
+  assert.match(html, /KSh 1,250/);
+  assert.match(html, /luxe-add/);
+  assert.match(html, /wa\.me\/254718515142/);
+  assert.doesNotMatch(html, /<x>/);
 });
 
 test('postHref prefers pre-rendered pages', () => {

@@ -4,10 +4,9 @@ Reviewed from the site in this project on 11 Nov 2026, which is the copy last pr
 
 ## Contact
 
-- WhatsApp 0718 515 142 (`+254718515142`) is the number used on the pages and in `wa.me` links.
-- A second number, `+254 180 154 352`, was in the header and in the page data. A printed image has been described as `0180 154 32`. Those two do not match, and neither is a normal Kenyan mobile. That second number is no longer printed.
-- Email on every page was `omegaomegageneralsuppliers@gmail.com`. It is a real inbox and a different name from the shop. It stays until a domain address exists.
-- Address everywhere that was checked: Gikomba Market, Nairobi. No stall number or landmark is published.
+- Published phone / WhatsApp: `0718 515 142` (`+254718515142`). No second number is shown unless the owner confirms a real mobile.
+- General contact email is `info@omuwenga.com`. Careers applications use `jobs@omuwenga.com`.
+- Address: Gikomba Market, Nairobi. Visitors are asked to call or WhatsApp for directions to the stall.
 - Hours that were published: Monday to Saturday, 8:00am–6:00pm.
 
 ## SEO and metadata

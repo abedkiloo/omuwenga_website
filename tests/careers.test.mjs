@@ -79,7 +79,7 @@ test('sales representative fields match the approved copy', () => {
     job.offer,
     "An opportunity to contribute to the growth of a business serving Kenya's furniture-making and upholstery industry, develop customer relationships and explore new market opportunities.",
   );
-  assert.equal(job.apply.email, 'omegaomegageneralsuppliers@gmail.com');
+  assert.equal(job.apply.email, 'jobs@omuwenga.com');
   assert.equal(job.apply.subject, 'Application \u2013 Sales Representative');
   assert.equal(job.apply.intro, 'Interested candidates should send their updated CV and a brief application letter to:');
   assert.equal(
@@ -127,7 +127,7 @@ test('the careers listing introduces the open role', () => {
 test('every page uses the same main navigation', () => {
   const pages = htmlFiles(root);
   assert.ok(pages.length >= 16);
-  const expected = ['Home', 'About Us', 'Products', 'Zippers and sliders', 'Sofa stands', 'Piping and lipping', 'Hook and loop', 'Webbing', 'Handles and castors', 'Catalogue', 'Our Work', 'Guides', 'Contact'];
+  const expected = ['Home', 'About Us', 'Products', 'Zippers and sliders', 'Sofa stands', 'Piping and lipping', 'Hook and loop', 'Webbing', 'Handles and castors', 'Catalogue', 'Our Work', 'Guides', 'Careers', 'Contact'];
   for (const file of pages) {
     const html = readFileSync(file, 'utf8');
     const header = html.match(/<header class="site-header">[\s\S]*?<\/header>/);
@@ -143,4 +143,15 @@ test('sitemap includes the careers URLs', () => {
   const xml = read('sitemap.xml');
   assert.match(xml, /<loc>https:\/\/omuwenga\.com\/careers\/<\/loc>/);
   assert.match(xml, /<loc>https:\/\/omuwenga\.com\/careers\/sales-representative\/<\/loc>/);
+});
+
+test('home page highlights the open Sales Representative role', () => {
+  const html = read('index.html');
+  assert.match(html, /class="luxe-careers"/);
+  assert.match(html, /Sales Representative/);
+  assert.match(html, /careers\/sales-representative\//);
+  assert.match(html, /jobs@omuwenga\.com/);
+  assert.match(html, /Now hiring: Sales Representative/);
+  const header = html.match(/<header class="site-header">[\s\S]*?<\/header>/)[0];
+  assert.match(header, />Careers<\/a>/);
 });

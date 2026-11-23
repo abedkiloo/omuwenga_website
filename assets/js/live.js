@@ -9,11 +9,14 @@ import {
   blogPostingJsonLd,
   enquiryMessage,
   escapeHtml,
+  featuredProductCardHtml,
+  HOME_FEATURED_PAGE_SIZE,
+  homeFeaturedHasMore,
   postCardHtml,
   postHref,
   productCardHtml,
   whatsappLink,
-} from './cms-core.js?v=12';
+} from './cms-core.js?v=13';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -225,22 +228,59 @@ async function initHomePosts(section) {
 async function initHomeProducts(section) {
   const list = section.querySelector('[data-home-products-list]');
   const status = section.querySelector('[data-home-products-status]');
-  try {
-    const data = await getJson('products/', { page_size: 12 });
-    const items = data.results || [];
-    if (!items.length) {
-      setStatus(status, 'The shop list is empty right now. The picture catalogue above is still here, or send an enquiry.');
-      return;
+  const sentinel = section.querySelector('[data-home-products-sentinel]');
+  const hint = section.querySelector('[data-home-products-hint]');
+  const state = { page: 1, loading: false, done: false };
+
+  async function loadMore() {
+    if (state.loading || state.done) return;
+    state.loading = true;
+    if (state.page === 1) setStatus(status, 'Loading fittings…');
+    try {
+      const data = await getJson('products/', {
+        page: state.page,
+        page_size: HOME_FEATURED_PAGE_SIZE,
+      });
+      const items = data.results || [];
+      if (state.page === 1 && !items.length) {
+        setStatus(status, 'The shop list is empty right now. Browse the catalogue, or send an enquiry.');
+        if (hint) hint.hidden = true;
+        if (sentinel) sentinel.hidden = true;
+        section.hidden = false;
+        state.done = true;
+        return;
+      }
+      list.insertAdjacentHTML('beforeend', items.map(featuredProductCardHtml).join(''));
+      setStatus(status, '');
+      section.hidden = false;
+      const more = homeFeaturedHasMore(data);
+      state.done = !more;
+      state.page += 1;
+      if (sentinel) sentinel.hidden = !more;
+      if (hint) hint.hidden = !more;
+    } catch {
+      if (state.page === 1) {
+        setStatus(status, 'The shop list is not available right now. Use the catalogue, or send an enquiry.');
+        section.hidden = false;
+      }
+      state.done = true;
+      if (sentinel) sentinel.hidden = true;
+      if (hint) hint.hidden = true;
+    } finally {
+      state.loading = false;
     }
-    list.innerHTML = items.map(productCardHtml).join('');
-    const pictured = items.filter((item) => item.image_url).length;
-    setStatus(status, pictured
-      ? `${items.length} items from the shop, ${pictured} with a photo.`
-      : `${items.length} items from the shop. Photos appear here when a product has one.`);
-    section.hidden = false;
-  } catch {
-    setStatus(status, 'The shop list is not available right now. Use the picture catalogue above, or send an enquiry.');
   }
+
+  await loadMore();
+  if (!sentinel || state.done) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) loadMore();
+    },
+    { rootMargin: '240px 0px' },
+  );
+  observer.observe(sentinel);
 }
 
 /* ---------- Contact form → WhatsApp ---------- */

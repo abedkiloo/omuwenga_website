@@ -12,7 +12,7 @@
     tagline: "The Furniture Maker's Supply Partner",
     whatsapp: '254718515142',
     whatsappDisplay: '0718 515 142',
-    email: 'omegaomegageneralsuppliers@gmail.com',
+    email: 'info@omuwenga.com',
     address: 'Gikomba Market, Nairobi, Kenya',
     hours: 'Monday to Saturday, 8:00am–6:00pm',
     whatsappMessage: 'Hello Omuwenga, I would like to ask about a fitting.',

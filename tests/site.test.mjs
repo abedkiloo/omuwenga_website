@@ -31,6 +31,8 @@ test('found the site pages', () => {
 for (const page of pages) {
   test(`${page.rel}: branding and contacts`, () => {
     assert.doesNotMatch(page.html, /Placeholder/);
+    assert.doesNotMatch(page.html, /\[\[NEEDS FROM OWNER/);
+    assert.doesNotMatch(page.html, /\[\[REAL PHOTO NEEDED/);
     assert.doesNotMatch(page.html, /700000000|700&nbsp;000/);
     assert.match(page.html, /wa\.me\/254718515142/);
     assert.match(page.html, /class="whatsapp-float"/);
@@ -103,6 +105,24 @@ test('home page declares the organisation, slogan and service area', () => {
   assert.equal(org.slogan, "The Furniture Maker's Supply Partner");
   assert.deepEqual(org.areaServed.map((a) => a.name), ['Kenya']);
   assert.ok(graph.some((n) => n['@type'] === 'Store'));
+});
+
+test('home landing uses catalogue imagery and scroll-fed featured products', () => {
+  const html = read('index.html');
+  assert.match(html, /class="announce-bar"/);
+  assert.match(html, /class="luxe-hero"/);
+  assert.match(html, /african-sofa-artisan-hero\.jpg/);
+  assert.match(html, />OMUWENGA</);
+  assert.match(html, /Fittings that finish every piece/);
+  assert.match(html, /class="luxe-cats"/);
+  assert.match(html, /assets\/catalogue\/tiles\/zipper-no5\.jpg/);
+  assert.match(html, /data-home-products/);
+  assert.match(html, /data-home-products-list/);
+  assert.match(html, /data-home-products-sentinel/);
+  assert.match(html, /class="luxe-promos"/);
+  assert.match(html, /class="luxe-trust"/);
+  assert.match(html, /info@omuwenga\.com/);
+  assert.doesNotMatch(html, /omegaomegageneralsuppliers@gmail\.com/);
 });
 
 test('inner pages carry breadcrumbs; guides carry Article data', () => {

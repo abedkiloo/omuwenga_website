@@ -8,8 +8,8 @@ export const BUSINESS = {
   legalName: 'Omuwenga Suppliers',
   tagline: "The Furniture Maker's Supply Partner",
   whatsapp: '254718515142',
-  phones: ['+254718515142', '+254180154352'],
-  email: 'omegaomegageneralsuppliers@gmail.com',
+  phones: ['+254718515142'],
+  email: 'info@omuwenga.com',
 };
 
 const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -191,6 +191,48 @@ export function productImageUrls(product) {
     .forEach((row) => push(row?.url));
   push(product?.image_url);
   return urls;
+}
+
+/** Home featured grid: first page size and each scroll-loaded page. */
+export const HOME_FEATURED_PAGE_SIZE = 6;
+
+/**
+ * Compact featured card for the home landing grid.
+ *
+ * @param {object} product
+ * @returns {string}
+ */
+export function featuredProductCardHtml(product) {
+  const name = escapeHtml(product.name);
+  const notes = escapeHtml(product.subcategory?.name || product.category?.name || '');
+  const gallery = productImageUrls(product);
+  const imageUrl = escapeHtml(gallery[0] || '');
+  const image = imageUrl
+    ? `<img src="${imageUrl}" alt="${name}" loading="lazy" width="400" height="400">`
+    : `<span class="luxe-product-fallback" aria-hidden="true">${escapeHtml(initials(product.name))}</span>`;
+  const price = formatPrice(product.price);
+  const enquire = escapeHtml(whatsappLink(productEnquiry(product)));
+  return `<article class="luxe-product-card">
+  <div class="luxe-product-media">${image}</div>
+  <div class="luxe-product-body">
+    <h3>${name}</h3>
+    ${notes ? `<p class="luxe-product-notes">${notes}</p>` : ''}
+    <div class="luxe-product-meta">
+      ${price ? `<strong class="luxe-product-price">${price}</strong>` : '<span></span>'}
+      <a class="luxe-add" href="${enquire}" aria-label="Ask about ${name} on WhatsApp">+</a>
+    </div>
+  </div>
+</article>`;
+}
+
+/**
+ * Whether the home featured list still has another API page to load.
+ *
+ * @param {{ next?: string | null } | null | undefined} page
+ * @returns {boolean}
+ */
+export function homeFeaturedHasMore(page) {
+  return Boolean(page && page.next);
 }
 
 export function productCardHtml(product) {

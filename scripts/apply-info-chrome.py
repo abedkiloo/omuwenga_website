@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WA = "https://wa.me/254718515142?text=Hello%20Omuwenga%2C%20I%20would%20like%20to%20ask%20about%20a%20fitting."
-EMAIL = "omegaomegageneralsuppliers@gmail.com"
+EMAIL = "info@omuwenga.com"
 NAV = [
     ("home", "", "Home"),
     ("about", "about/", "About Us"),
@@ -13,6 +13,7 @@ NAV = [
     ("catalogue", "catalogue/", "Catalogue"),
     ("work", "work/", "Our Work"),
     ("guides", "guides/", "Guides"),
+    ("careers", "careers/", "Careers"),
     ("contact", "contact/", "Contact"),
 ]
 SUBS = [
@@ -148,8 +149,6 @@ def category(slug, title, desc, intro, stock, blocks, photos, guide):
             f'<figure><img src="../../assets/catalogue/tiles/{src}" alt="{alt}" width="320" height="300"><figcaption>{cap}</figcaption></figure>'
             for src, alt, cap in photos
         ) + "</div>")
-    else:
-        bits.append(f'<div class="photo-needed">[[REAL PHOTO NEEDED: {title.split("|")[0].strip()} on a plain backdrop, square, daylight]]</div>')
     bits.append(f'<p><a href="../../guides/{guide}">Read the related guide</a> · <a href="../">See the current product list</a></p>')
     bits.append(f'<section class="close-band"><div class="container"><h2>Questions about a part?</h2><p>Send the name, the size and a photo. The shop confirms what is in stock before you pay.</p><a class="button" href="{WA}">Get in Touch</a></div></section>')
     page(
@@ -240,7 +239,7 @@ def main():
         "Omuwenga does not publish customer furniture on this site. See the fittings catalogue and the product list.",
         "https://omuwenga.com/work/",
         [("Home", "https://omuwenga.com/"), ("Our Work", "https://omuwenga.com/work/")],
-        f'<p class="crumbs"><a href="../">Home</a> / Our Work</p><h1>Our work</h1><p>Omuwenga supplies fittings. Finished customer furniture is not published here, because that would need each maker’s permission and a photo of their work.</p><p><a href="../catalogue/">Open the fittings catalogue</a> · <a href="../products/">See products in the shop</a></p><section class="close-band"><div class="container"><h2>Questions about a part?</h2><p>Send the name, the size and a photo.</p><a class="button" href="{WA}">Get in Touch</a></div></section>',
+        f'<p class="crumbs"><a href="../">Home</a> / Our Work</p><h1>Our work</h1><p>Omuwenga supplies the fittings furniture makers use every day — zippers, stands, piping, webbing and hardware. See the current shop list and the picture catalogue for what is available.</p><p><a href="../catalogue/">Open the fittings catalogue</a> · <a href="../products/">See products in the shop</a></p><section class="close-band"><div class="container"><h2>Questions about a part?</h2><p>Send the name, the size and a photo.</p><a class="button" href="{WA}">Get in Touch</a></div></section>',
         "work",
     )
     page(
@@ -282,18 +281,17 @@ HOME = '''<main id="content">
 <section class="band" id="supply"><div class="container">
 <span class="eyebrow">What we supply</span><h2>Six groups of fittings.</h2>
 <article class="supply-row"><div class="supply-photo"><img src="assets/catalogue/tiles/flower-stand.jpg" alt="Gold flower sofa stand from the Omuwenga catalogue" width="325" height="296"></div><div class="supply-copy"><p class="kicker">Stands</p><h3>Sofa stands and legs</h3><p>Carrot, trophy, flower, Y-stand, round and spiral stands are named in the shop list, including 4 inch, 5 inch and 6 inch sizes.</p><p><a href="products/sofa-stands/">Learn more</a></p></div></article>
-<article class="supply-row reverse"><div class="photo-needed">[[REAL PHOTO NEEDED: nylon zippers and sliders, No. 5 to No. 10, on a plain backdrop]]</div><div class="supply-copy"><p class="kicker">Closures</p><h3>Zippers and sliders</h3><p>Nylon zippers and matching sliders. The sizes named in the shop are No. 5, No. 7, No. 8 and No. 10.</p><p><a href="products/zippers/">Learn more</a></p></div></article>
+<article class="supply-row reverse"><div class="supply-photo"><img src="assets/catalogue/tiles/zipper-no5.jpg" alt="Nylon zipper from the Omuwenga catalogue" width="325" height="296"></div><div class="supply-copy"><p class="kicker">Closures</p><h3>Zippers and sliders</h3><p>Nylon zippers and matching sliders. The sizes named in the shop are No. 5, No. 7, No. 8 and No. 10.</p><p><a href="products/zippers/">Learn more</a></p></div></article>
 <article class="supply-row"><div class="supply-photo"><img src="assets/catalogue/tiles/handles.jpg" alt="Furniture handle from the Omuwenga catalogue" width="326" height="296"></div><div class="supply-copy"><p class="kicker">Hardware</p><h3>Handles, castors and finishing</h3><p>Handles are listed from 96 mm to 150 mm. The catalogue shows handles, carpet castors, sofa buttons and sofa rim.</p><p><a href="products/hardware/">Learn more</a></p></div></article>
-<article class="supply-row reverse"><div class="photo-needed">[[REAL PHOTO NEEDED: 25 mm and 50 mm hook and loop tape, same backdrop as the other fittings]]</div><div class="supply-copy"><p class="kicker">Tape</p><h3>Hook and loop</h3><p>25 mm and 50 mm hook and loop are named in the shop list, by the metre or by the roll.</p><p><a href="products/hook-and-loop/">Learn more</a></p></div></article>
-<article class="supply-row"><div class="photo-needed">[[REAL PHOTO NEEDED: 50 mm upholstery webbing, with a ruler in the frame]]</div><div class="supply-copy"><p class="kicker">Support</p><h3>Webbing and straps</h3><p>50 mm webbing is the width named in the shop list for seats and backs.</p><p><a href="products/webbing/">Learn more</a></p></div></article>
-<article class="supply-row reverse"><div class="photo-needed">[[REAL PHOTO NEEDED: PVC lipping and piping widths on a plain backdrop]]</div><div class="supply-copy"><p class="kicker">Edge</p><h3>Piping and lipping</h3><p>Plastic lipping and PVC, including the inch widths named on the product list.</p><p><a href="products/piping/">Learn more</a></p></div></article>
+<article class="supply-row reverse"><div class="supply-photo"><img src="assets/catalogue/tiles/hook-and-loop.jpg" alt="Hook and loop tape from the Omuwenga catalogue" width="325" height="296"></div><div class="supply-copy"><p class="kicker">Tape</p><h3>Hook and loop</h3><p>25 mm and 50 mm hook and loop are named in the shop list, by the metre or by the roll.</p><p><a href="products/hook-and-loop/">Learn more</a></p></div></article>
+<article class="supply-row"><div class="supply-photo"><img src="assets/catalogue/tiles/webbing.jpg" alt="Upholstery webbing from the Omuwenga catalogue" width="326" height="296"></div><div class="supply-copy"><p class="kicker">Support</p><h3>Webbing and straps</h3><p>50 mm webbing is the width named in the shop list for seats and backs.</p><p><a href="products/webbing/">Learn more</a></p></div></article>
+<article class="supply-row reverse"><div class="supply-photo"><img src="assets/catalogue/tiles/piping-white.jpg" alt="Piping and lipping from the Omuwenga catalogue" width="325" height="296"></div><div class="supply-copy"><p class="kicker">Edge</p><h3>Piping and lipping</h3><p>Plastic lipping and PVC, including the inch widths named on the product list.</p><p><a href="products/piping/">Learn more</a></p></div></article>
 </div></section>
 <section class="band"><div class="container"><span class="eyebrow">How to get what you need</span><h2>Four steps.</h2>
 <ol class="steps"><li><strong>Send or bring the piece.</strong> A photo, a sample, or the old fitting is enough to start.</li><li><strong>The size and type are checked.</strong> Zipper number, stand shape, tape width or handle length.</li><li><strong>Availability is confirmed.</strong> The shop says what is in stock and the price before you pay.</li><li><strong>Collect or send.</strong> Collect in Gikomba, or ask for a Nairobi rider or a courier across Kenya.</li></ol>
 </div></section>
 <section class="band" id="find"><div class="container"><span class="eyebrow">Find the stall</span><h2>Gikomba Market, Nairobi.</h2>
-<p>Omuwenga Suppliers, Gikomba Market. Monday to Saturday, 8:00am–6:00pm. Call or WhatsApp 0718 515 142 before you travel and the shop will direct you. A stall number and landmark are not published yet.</p>
-<p>[[REAL PHOTO NEEDED: four daylight photos — the street approach, a landmark, the entrance, and the counter]]</p>
+<p>Omuwenga Suppliers, Gikomba Market. Monday to Saturday, 8:00am–6:00pm. Call or WhatsApp 0718 515 142 before you travel and the shop will direct you.</p>
 <div class="map-embed"><iframe title="Map showing Gikomba Market in Nairobi" src="https://www.google.com/maps?q=Gikomba%20Market%20Nairobi&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 </div></section>
 <section class="close-band"><div class="container"><h2>Questions about a part?</h2><p>Send the name, the size and a photo. Wholesale and retail are both quoted before you pay.</p><a class="button" href="{wa}">Get in Touch</a></div></section>
@@ -317,8 +315,7 @@ def rewrite_about():
     body = f'''<section class="page-hero"><div class="container narrow"><p class="crumbs"><a href="../">Home</a> / About</p><h1>About Omuwenga Suppliers</h1>
 <p>Omuwenga Suppliers is a furniture and upholstery fittings shop in Gikomba Market, Nairobi. The hours are Monday to Saturday, 8:00am–6:00pm.</p></div></section>
 <section class="band"><div class="container"><h2>What is stocked</h2><p>Zippers and sliders, sofa stands and legs, piping and lipping, webbing, hook and loop, handles, castors and finishing hardware. Wholesale and retail. Payment is M-Pesa, bank transfer or cash, confirmed before you pay.</p>
-<h2>What this site does not claim</h2><p>There is no published year of founding, no certificate, and no list of client businesses. Team photos are not on this site.</p>
-<p>[[REAL PHOTO NEEDED: the stall in daylight, and a working shot of fittings on the counter. No posed stock photo.]]</p>
+<h2>How we work</h2><p>Bring a sample, a photo or the old fitting. The shop matches the size and type, confirms what is in stock, and quotes before you pay. Collect in Gikomba, or ask about a Nairobi rider or a courier across Kenya.</p>
 <p><a href="../location/">Location and delivery</a> · <a href="../catalogue/">Catalogue</a></p></div></section>
 <section class="close-band"><div class="container"><h2>Questions about a part?</h2><p>WhatsApp 0718 515 142, or email {EMAIL}.</p><a class="button" href="{WA}">Get in Touch</a></div></section>'''
     html = re.sub(r'<main id="content"[\s\S]*?</main>', '<main id="content">' + body + '</main>', html, count=1)
@@ -334,13 +331,13 @@ def rewrite_contact():
     body = f'''<section class="page-hero"><div class="container"><p class="crumbs"><a href="../">Home</a> / Contact</p><h1>Contact the shop</h1>
 <p>Ask about a size, a colour or a quantity. The shop replies on WhatsApp, by phone or by email.</p></div></section>
 <section class="band"><div class="container contact-blocks">
-<article><h2>Telephone</h2><p><a href="tel:+254718515142">0718 515 142</a></p><p>[[NEEDS FROM OWNER: confirm the second number. The site previously showed +254 180 154 352, and a printed image showed 0180 154 32. They do not match, so that number is not published.]]</p></article>
+<article><h2>Telephone</h2><p><a href="tel:+254718515142">0718 515 142</a></p><p>Call during shop hours for sizes, stock and directions.</p></article>
 <article><h2>WhatsApp</h2><p><a class="button" href="{WA}">Get in Touch</a></p><p>The message starts with a short note you can edit.</p></article>
-<article><h2>Email</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a></p><p>[[NEEDS FROM OWNER: a branded email on your own domain, when you have one. This Gmail address is the one in use.]]</p></article>
-<article><h2>Address</h2><p>Omuwenga Suppliers<br>Gikomba Market, Nairobi, Kenya</p><p>[[NEEDS FROM OWNER: stall number and a landmark inside Gikomba.]]</p><p>Monday to Saturday, 8:00am–6:00pm.</p></article>
+<article><h2>Email</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a></p><p>For trade enquiries and written quotes.</p></article>
+<article><h2>Address</h2><p>Omuwenga Suppliers<br>Gikomba Market, Nairobi, Kenya</p><p>Monday to Saturday, 8:00am–6:00pm. Call or WhatsApp when you are nearby and we will guide you to the stall.</p></article>
 </div></section>
 <section class="band" id="find"><div class="container"><h2>Find the stall</h2>
-<p>[[REAL PHOTO NEEDED: street approach, landmark, entrance, and counter, shot in daylight.]]</p>
+<p>Omuwenga Suppliers is in Gikomba Market, Nairobi. Open Monday to Saturday, 8:00am–6:00pm. Call or WhatsApp 0718 515 142 before you travel and the shop will direct you.</p>
 <div class="map-embed"><iframe title="Map showing Gikomba Market in Nairobi" src="https://www.google.com/maps?q=Gikomba%20Market%20Nairobi&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 <div class="contact-grid"><div>{form_html}</div></div>
 </div></section>

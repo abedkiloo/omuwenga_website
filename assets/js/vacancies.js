@@ -58,7 +58,7 @@ export const vacancies = [
     offer:
       "An opportunity to contribute to the growth of a business serving Kenya's furniture-making and upholstery industry, develop customer relationships and explore new market opportunities.",
     apply: {
-      email: "omegaomegageneralsuppliers@gmail.com",
+      email: "jobs@omuwenga.com",
       subject: "Application \u2013 Sales Representative",
       intro: "Interested candidates should send their updated CV and a brief application letter to:",
       include:
