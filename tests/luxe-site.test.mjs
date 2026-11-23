@@ -47,7 +47,8 @@ test('integration: inner pages use atelier; home keeps luxe landing', () => {
 test('module: about page is an editorial AboutPage with stock grid', () => {
   const html = read('about/index.html');
   assert.match(html, /class="atelier-hero"/);
-  assert.match(html, /african-upholstery-team\.jpg/);
+  assert.match(html, /omuwenga-stall-wide\.jpg/);
+  assert.match(html, /class="stall-mosaic"/);
   assert.match(html, /class="atelier-stock-grid"/);
   assert.match(html, /class="atelier-step-list"/);
   assert.match(html, /"@type":"AboutPage"/);

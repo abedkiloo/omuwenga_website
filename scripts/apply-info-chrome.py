@@ -68,13 +68,19 @@ def footer(prefix: str) -> str:
     logo = url(prefix, "assets/images/omuwenga-logo.jpg")
     home = url(prefix, "")
     pdf = url(prefix, "assets/catalogue/omuwenga-suppliers-catalogue.pdf")
-    return f'''<footer class="site-footer"><div class="container footer-grid">
+    maps = "https://maps.google.com/?q=Gikomba+Market+Nairobi"
+    return f'''<footer class="site-footer">
+<div class="footer-cta"><div class="container footer-cta-inner">
+<div><p class="footer-cta-kicker">Visit the go-to stall</p><h2>Gikomba Market, Nairobi</h2><p>Monday to Saturday, 8:00am–6:00pm · Call or WhatsApp 0718 515 142 for directions.</p></div>
+<div class="button-row"><a class="button" href="{maps}">Open Google Maps</a><a class="button button-outline" href="{WA}">Get in Touch</a></div>
+</div></div>
+<div class="container footer-grid">
 <div><a class="brand" href="{home}"><span class="logo-chip"><img class="brand-logo" src="{logo}" alt="Omuwenga logo" width="54" height="54"></span><span class="brand-name"><strong>OMUWENGA</strong><small>The Furniture Maker&rsquo;s Supply Partner</small></span></a>
-<p>Furniture and upholstery supplies for workshops, manufacturers, upholsterers and resellers across East Africa.</p>
+<p>Kenya&rsquo;s go-to furniture and upholstery fittings supplier — wholesale and retail for workshops, manufacturers, upholsterers and resellers across East Africa.</p>
 <p><a href="{pdf}">Product catalogue (PDF)</a></p></div>
 <div><h2>Company</h2><p><a href="{url(prefix, "about/")}">About</a><br><a href="{url(prefix, "contact/")}">Contact</a><br><a href="{url(prefix, "careers/")}">Careers</a><br><a href="{url(prefix, "work/")}">Our Work</a><br><a href="{url(prefix, "catalogue/")}">Catalogue</a><br><a href="{url(prefix, "faq/")}">FAQ</a><br><a href="{url(prefix, "blog/")}">Blog</a></p></div>
 <div><h2>Contact</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a><br><a href="tel:+254718515142">0718 515 142</a><br><a href="{WA}">WhatsApp</a><br>Gikomba Market, Nairobi<br>Mon–Sat, 8:00am–6:00pm</p></div>
-<div><h2>Visit</h2><p>Omuwenga Suppliers<br>Gikomba Market, Nairobi, Kenya<br>Collect in Gikomba, or ask about a courier across Kenya.</p></div>
+<div><h2>Visit</h2><p>Omuwenga Suppliers<br>Gikomba Market, Nairobi, Kenya<br>Collect in Gikomba, or ask about a courier across Kenya.<br><a href="{url(prefix, "location/")}">Location &amp; map</a></p></div>
 </div><div class="container footer-bottom"><span>© <span data-year></span> Omuwenga Suppliers</span><a href="{url(prefix, "privacy/")}">Privacy Policy</a><a href="{url(prefix, "terms/")}">Terms</a></div></footer>
 <a class="whatsapp-float" href="{WA}" aria-label="Get in Touch"><span class="whatsapp-float-label">Get in Touch</span></a>'''
 

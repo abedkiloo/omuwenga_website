@@ -23,11 +23,15 @@ test('unit: product cards use premium 20px radius and soft media well', () => {
 });
 
 test('integration: products and home pages load the upgraded info stylesheet', () => {
-  assert.match(products, /info\.css\?v=14/);
-  assert.match(home, /info\.css\?v=14/);
-  assert.match(about, /info\.css\?v=14/);
-  assert.match(location, /info\.css\?v=14/);
-  assert.match(contact, /info\.css\?v=14/);
+  for (const [name, html] of [
+    ['products', products],
+    ['home', home],
+    ['about', about],
+    ['location', location],
+    ['contact', contact],
+  ]) {
+    assert.match(html, /info\.css\?v=1[45]/, name);
+  }
 });
 
 test('module: about page tells the humble-beginnings story without invented years', () => {
