@@ -51,7 +51,8 @@ test('module: about page is an editorial AboutPage with stock grid', () => {
   assert.match(html, /class="atelier-stock-grid"/);
   assert.match(html, /class="atelier-step-list"/);
   assert.match(html, /"@type":"AboutPage"/);
-  assert.match(html, /The furniture maker/);
+  assert.match(html, /Humble beginnings/);
+  assert.match(html, /go-to fittings partner/);
   assert.match(html, /info@omuwenga\.com/);
   assert.doesNotMatch(html, /\[\[NEEDS FROM OWNER/);
 });
