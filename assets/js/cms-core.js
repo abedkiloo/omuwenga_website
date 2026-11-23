@@ -193,7 +193,7 @@ export function productImageUrls(product) {
   return urls;
 }
 
-/** Home featured grid: first page size and each scroll-loaded page. */
+/** Home featured grid: top products only; full range lives in the catalogue. */
 export const HOME_FEATURED_PAGE_SIZE = 6;
 
 /** Products fetched for the home announce-bar rotator (1–48). */
@@ -277,13 +277,14 @@ export function featuredProductCardHtml(product) {
 }
 
 /**
- * Whether the home featured list still has another API page to load.
+ * Home no longer infinite-scrolls; kept for callers that still check paging.
  *
  * @param {{ next?: string | null } | null | undefined} page
- * @returns {boolean}
+ * @returns {boolean} Always false — home shows at most HOME_FEATURED_PAGE_SIZE items.
  */
 export function homeFeaturedHasMore(page) {
-  return Boolean(page && page.next);
+  void page;
+  return false;
 }
 
 export function productCardHtml(product) {

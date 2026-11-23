@@ -129,7 +129,7 @@ test('productCardHtml escapes data, shows stock, price and fallback image', () =
 
 test('home featured page size is six and cards stay compact', () => {
   assert.equal(HOME_FEATURED_PAGE_SIZE, 6);
-  assert.equal(homeFeaturedHasMore({ next: 'https://api.example/page=2' }), true);
+  assert.equal(homeFeaturedHasMore({ next: 'https://api.example/page=2' }), false);
   assert.equal(homeFeaturedHasMore({ next: null }), false);
   assert.equal(homeFeaturedHasMore(null), false);
   const html = featuredProductCardHtml({

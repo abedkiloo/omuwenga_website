@@ -107,7 +107,7 @@ test('home page declares the organisation, slogan and service area', () => {
   assert.ok(graph.some((n) => n['@type'] === 'Store'));
 });
 
-test('home landing uses catalogue imagery and scroll-fed featured products', () => {
+test('home landing uses catalogue imagery and a capped featured grid', () => {
   const html = read('index.html');
   assert.match(html, /class="announce-bar"/);
   assert.match(html, /data-announce-products/);
@@ -122,7 +122,8 @@ test('home landing uses catalogue imagery and scroll-fed featured products', () 
   assert.match(html, /assets\/catalogue\/tiles\/zipper-no5\.jpg/);
   assert.match(html, /data-home-products/);
   assert.match(html, /data-home-products-list/);
-  assert.match(html, /data-home-products-sentinel/);
+  assert.match(html, /Browse the catalogue/);
+  assert.doesNotMatch(html, /data-home-products-sentinel/);
   assert.match(html, /class="luxe-promos"/);
   assert.match(html, /class="luxe-trust"/);
   assert.match(html, /info@omuwenga\.com/);
