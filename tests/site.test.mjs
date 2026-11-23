@@ -110,6 +110,10 @@ test('home page declares the organisation, slogan and service area', () => {
 test('home landing uses catalogue imagery and scroll-fed featured products', () => {
   const html = read('index.html');
   assert.match(html, /class="announce-bar"/);
+  assert.match(html, /data-announce-products/);
+  assert.match(html, /data-announce-live/);
+  assert.match(html, /Browse products/);
+  assert.doesNotMatch(html, /Now hiring: Sales Representative/);
   assert.match(html, /class="luxe-hero"/);
   assert.match(html, /african-sofa-artisan-hero\.jpg/);
   assert.match(html, />OMUWENGA</);

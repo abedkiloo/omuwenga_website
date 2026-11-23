@@ -151,7 +151,8 @@ test('home page highlights the open Sales Representative role', () => {
   assert.match(html, /Sales Representative/);
   assert.match(html, /careers\/sales-representative\//);
   assert.match(html, /jobs@omuwenga\.com/);
-  assert.match(html, /Now hiring: Sales Representative/);
+  assert.doesNotMatch(html, /Now hiring: Sales Representative/);
+  assert.match(html, /data-announce-products/);
   const header = html.match(/<header class="site-header">[\s\S]*?<\/header>/)[0];
   assert.match(header, />Careers<\/a>/);
 });

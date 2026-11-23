@@ -4,6 +4,9 @@
  * container exists on the page, and fails quietly back to the static content.
  */
 import {
+  announceProductLineHtml,
+  ANNOUNCE_PRODUCT_PAGE_SIZE,
+  ANNOUNCE_ROTATE_MS,
   apiUrl,
   articleHtml,
   blogPostingJsonLd,
@@ -12,11 +15,13 @@ import {
   featuredProductCardHtml,
   HOME_FEATURED_PAGE_SIZE,
   homeFeaturedHasMore,
+  nextAnnounceIndex,
   postCardHtml,
   postHref,
   productCardHtml,
+  shuffleProducts,
   whatsappLink,
-} from './cms-core.js?v=13';
+} from './cms-core.js?v=14';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -222,6 +227,51 @@ async function initHomePosts(section) {
     section.hidden = false;
   } catch {
     /* keep hidden */
+  }
+}
+
+/**
+ * Rotate random shop products in the home announce bar.
+ *
+ * @param {HTMLElement} root Element with [data-announce-products].
+ * @returns {Promise<void>} Resolves after the first paint or silent fallback.
+ */
+async function initAnnounceProducts(root) {
+  const live = root.querySelector('[data-announce-live]');
+  const fallback = root.querySelector('[data-announce-static]');
+  if (!live) return;
+
+  try {
+    const data = await getJson('products/', {
+      page: 1,
+      page_size: ANNOUNCE_PRODUCT_PAGE_SIZE,
+    });
+    const products = shuffleProducts(data.results || []).filter((item) => String(item?.name || '').trim());
+    if (!products.length) return;
+
+    let index = 0;
+    const paint = () => {
+      const html = announceProductLineHtml(products[index]);
+      if (!html) return;
+      live.classList.remove('is-on');
+      window.setTimeout(() => {
+        live.innerHTML = html;
+        live.hidden = false;
+        if (fallback) fallback.hidden = true;
+        live.classList.add('is-on');
+      }, 220);
+    };
+
+    paint();
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || products.length < 2) return;
+
+    window.setInterval(() => {
+      index = nextAnnounceIndex(index, products.length);
+      paint();
+    }, ANNOUNCE_ROTATE_MS);
+  } catch {
+    /* keep static wholesale / delivery line */
   }
 }
 
@@ -484,5 +534,7 @@ const homePosts = document.querySelector('[data-home-posts]');
 if (homePosts) initHomePosts(homePosts);
 const homeProducts = document.querySelector('[data-home-products]');
 if (homeProducts) initHomeProducts(homeProducts);
+const announceProducts = document.querySelector('[data-announce-products]');
+if (announceProducts) initAnnounceProducts(announceProducts);
 const enquiryForm = document.querySelector('[data-whatsapp-form]');
 if (enquiryForm) initEnquiryForm(enquiryForm);

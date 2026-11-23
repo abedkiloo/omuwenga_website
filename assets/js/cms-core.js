@@ -196,6 +196,57 @@ export function productImageUrls(product) {
 /** Home featured grid: first page size and each scroll-loaded page. */
 export const HOME_FEATURED_PAGE_SIZE = 6;
 
+/** Products fetched for the home announce-bar rotator (1–48). */
+export const ANNOUNCE_PRODUCT_PAGE_SIZE = 24;
+
+/** Milliseconds between announce-bar product swaps (2000–12000). */
+export const ANNOUNCE_ROTATE_MS = 4500;
+
+/**
+ * Fisher–Yates shuffle of a product list for random announce rotation.
+ *
+ * @param {Array<object|null|undefined>} items Product rows from the API.
+ * @returns {Array<object>} Shuffled copy; empty when items is empty or not an array. Max 200 items processed.
+ */
+export function shuffleProducts(items) {
+  const list = (Array.isArray(items) ? items : []).filter(Boolean).slice(0, 200);
+  for (let i = list.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = list[i];
+    list[i] = list[j];
+    list[j] = tmp;
+  }
+  return list;
+}
+
+/**
+ * Next index for the announce rotator, wrapping at the end.
+ *
+ * @param {number} current Zero-based index; negatives treated as 0.
+ * @param {number} length List length; must be >= 0. Returns 0 when length is 0.
+ * @returns {number} Next index in [0, length).
+ */
+export function nextAnnounceIndex(current, length) {
+  const len = Math.max(0, Number(length) || 0);
+  if (len === 0) return 0;
+  const cur = Math.max(0, Number(current) || 0);
+  return (cur + 1) % len;
+}
+
+/**
+ * One announce-bar line: product name, optional category, link into the shop.
+ *
+ * @param {object|null|undefined} product Shop product row.
+ * @returns {string} Safe HTML fragment, or empty string when name is missing.
+ */
+export function announceProductLineHtml(product) {
+  const name = String(product?.name || '').trim();
+  if (!name) return '';
+  const category = String(product?.subcategory?.name || product?.category?.name || '').trim();
+  const label = category ? `${escapeHtml(name)} · ${escapeHtml(category)}` : escapeHtml(name);
+  return `In stock · <a href="products/">${label}</a> · <a href="products/">See all fittings</a>`;
+}
+
 /**
  * Compact featured card for the home landing grid.
  *
