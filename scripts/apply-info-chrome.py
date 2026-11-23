@@ -68,7 +68,7 @@ def footer(prefix: str) -> str:
     logo = url(prefix, "assets/images/omuwenga-logo.jpg")
     home = url(prefix, "")
     pdf = url(prefix, "assets/catalogue/omuwenga-suppliers-catalogue.pdf")
-    maps = "https://maps.google.com/?q=Gikomba+Market+Nairobi"
+    maps = "https://maps.app.goo.gl/NaAHLbMCyyg8Dcfu5"
     return f'''<footer class="site-footer">
 <div class="footer-cta"><div class="container footer-cta-inner">
 <div><p class="footer-cta-kicker">Visit the go-to stall</p><h2>Gikomba Market, Nairobi</h2><p>Monday to Saturday, 8:00am–6:00pm · Call or WhatsApp 0718 515 142 for directions.</p></div>

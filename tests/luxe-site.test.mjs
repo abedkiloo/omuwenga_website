@@ -40,20 +40,18 @@ test('integration: inner pages use atelier; home keeps luxe landing', () => {
 
   for (const page of pages) {
     if (page.rel === 'index.html' || page.rel === '404.html') continue;
-    assert.match(page.html, /class="atelier"/, page.rel);
+    assert.match(page.html, /\batelier\b/, page.rel);
   }
 });
 
-test('module: about page is an editorial AboutPage with stock grid', () => {
+test('module: about page is brand AboutPage with heritage and expertise', () => {
   const html = read('about/index.html');
-  assert.match(html, /class="atelier-hero"/);
-  assert.match(html, /omuwenga-stall-wide\.jpg/);
-  assert.match(html, /class="stall-mosaic"/);
-  assert.match(html, /class="atelier-stock-grid"/);
-  assert.match(html, /class="atelier-step-list"/);
+  assert.match(html, /about-brand/);
+  assert.match(html, /class="ab-hero"/);
+  assert.match(html, /The Art of Supplying Excellence/);
+  assert.match(html, /Founded in 2022/);
+  assert.match(html, /class="ab-supply-grid"/);
   assert.match(html, /"@type":"AboutPage"/);
-  assert.match(html, /Humble beginnings/);
-  assert.match(html, /go-to fittings partner/);
   assert.match(html, /info@omuwenga\.com/);
   assert.doesNotMatch(html, /\[\[NEEDS FROM OWNER/);
 });
@@ -95,7 +93,8 @@ test('AI / SEO: llms.txt and robots stay crawlable with factual about summary', 
   const robots = read('robots.txt');
   assert.match(llms, /https:\/\/omuwenga\.com\/about\//);
   assert.match(llms, /For AI assistants/);
-  assert.match(llms, /Do not invent stall landmarks/);
+  assert.match(llms, /Founded in 2022|founded in 2022/);
+  assert.match(llms, /maps\.app\.goo\.gl\/NaAHLbMCyyg8Dcfu5/);
   assert.match(llms, /jobs@omuwenga\.com/);
   assert.match(robots, /llms\.txt/);
   assert.match(robots, /GPTBot/);

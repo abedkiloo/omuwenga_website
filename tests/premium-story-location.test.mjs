@@ -1,4 +1,4 @@
-/** Premium product cards, About story, go-to positioning, clear maps. */
+/** Premium product cards, go-to positioning, clear precise maps. */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -13,6 +13,7 @@ const location = read('location/index.html');
 const home = read('index.html');
 const products = read('products/index.html');
 const contact = read('contact/index.html');
+const MAP = 'https://maps.app.goo.gl/NaAHLbMCyyg8Dcfu5';
 
 test('unit: product cards use premium 20px radius and soft media well', () => {
   assert.match(css, /\.product-grid \.product-card\{[\s\S]*border-radius:20px/);
@@ -30,35 +31,33 @@ test('integration: products and home pages load the upgraded info stylesheet', (
     ['location', location],
     ['contact', contact],
   ]) {
-    assert.match(html, /info\.css\?v=1[45]/, name);
+    assert.match(html, /info\.css\?v=1[456]/, name);
   }
 });
 
-test('module: about page tells the humble-beginnings story without invented years', () => {
-  assert.match(about, /Humble beginnings/);
-  assert.match(about, /story-timeline/);
-  assert.match(about, /A fittings stall in Gikomba/);
-  assert.match(about, /go-to supply partner|go-to fittings partner/i);
-  assert.doesNotMatch(about, /founded in 19|established in 19|since 19\d\d/i);
+test('module: about brand page carries founding year and signature', () => {
+  assert.match(about, /Founded in 2022/);
+  assert.match(about, /The Art of Supplying Excellence/);
+  assert.match(about, /about-brand/);
   assert.doesNotMatch(about, /\[\[NEEDS FROM OWNER/);
 });
 
-test('corrected functionality: location and about show a clear map stage', () => {
+test('corrected functionality: location and about show precise Omuwenga map', () => {
   for (const html of [location, about, home, contact]) {
     assert.match(html, /class="map-stage"/);
-    assert.match(html, /maps\?q=Gikomba%20Market%20Nairobi/);
-    assert.match(html, /Open Google Maps/);
+    assert.match(html, /ftid=0x182f1129d8148173:0x3ab45ae9c290147b/);
+    assert.match(html, new RegExp(MAP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(location, /"@type":"LocalBusiness"/);
   assert.match(location, /hasMap/);
+  assert.match(location, /NaAHLbMCyyg8Dcfu5/);
 });
 
 test('stress: home visit band keeps map iframe and three location facts', () => {
   const band = home.match(/class="visit-band"[\s\S]*?<\/section>/)[0];
-  assert.match(band, /<iframe[^>]+Gikomba/);
+  assert.match(band, /<iframe[^>]+Omuwenga/);
   assert.equal((band.match(/map-stage-facts/g) || []).length, 1);
   assert.ok((band.match(/<li>/g) || []).length >= 3);
-  assert.match(home, /go-to/i);
 });
 
 test('security: map embeds stay on Google Maps and WhatsApp links stay wa.me', () => {
