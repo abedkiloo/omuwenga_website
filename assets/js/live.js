@@ -15,12 +15,14 @@ import {
   featuredProductCardHtml,
   HOME_FEATURED_PAGE_SIZE,
   nextAnnounceIndex,
+  nextProductSliderScrollLeft,
   postCardHtml,
   postHref,
+  PRODUCT_SLIDER_AUTO_MS,
   productCardHtml,
   shuffleProducts,
   whatsappLink,
-} from './cms-core.js?v=15';
+} from './cms-core.js?v=16';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -89,6 +91,7 @@ function initCatalog(root) {
       const items = (data.results || []).filter(matches);
       const html = items.map(productCardHtml).join('');
       grid.innerHTML = append ? grid.innerHTML + html : html;
+      bindProductImageSliders(grid);
       setStatus(status, items.length || append ? '' : 'No products match.');
       if (more) more.hidden = match.length ? true : !data.next;
       root.hidden = false;
@@ -360,6 +363,87 @@ function initEnquiryForm(form) {
   });
 }
 
+/**
+ * Auto-advance multi-photo product card sliders while they are on screen.
+ * Pauses on hover, focus, reduced motion, and when off-screen.
+ *
+ * @param {ParentNode} [root=document]
+ * @returns {number} Count of newly bound sliders (0–200).
+ */
+function bindProductImageSliders(root = document) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sliders = [...(root.querySelectorAll?.('.product-slider') || [])].slice(0, 200);
+  let bound = 0;
+
+  sliders.forEach((slider, index) => {
+    if (slider.dataset.autoBound === '1') return;
+    const track = slider.querySelector('.product-slider-track');
+    const slides = track ? [...track.querySelectorAll('.product-open')] : [];
+    if (!track || slides.length < 2) return;
+
+    slider.dataset.autoBound = '1';
+    bound += 1;
+
+    let timer = 0;
+    let paused = reduceMotion;
+    let inView = true;
+
+    const stop = () => window.clearInterval(timer);
+
+    const tick = () => {
+      const width = track.clientWidth || 1;
+      const next = nextProductSliderScrollLeft(track.scrollLeft, width, slides.length);
+      track.scrollTo({ left: next, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+
+    const start = () => {
+      stop();
+      if (paused || !inView || slides.length < 2) return;
+      timer = window.setInterval(tick, PRODUCT_SLIDER_AUTO_MS);
+    };
+
+    const pause = () => {
+      paused = true;
+      stop();
+    };
+
+    const resume = () => {
+      if (reduceMotion) return;
+      paused = false;
+      start();
+    };
+
+    slider.addEventListener('mouseenter', pause);
+    slider.addEventListener('mouseleave', resume);
+    slider.addEventListener('focusin', pause);
+    slider.addEventListener('focusout', (event) => {
+      if (!slider.contains(event.relatedTarget)) resume();
+    });
+    slider.addEventListener('pointerdown', (event) => {
+      if (event.target.closest('[data-slider-step], .product-open')) {
+        pause();
+        window.setTimeout(resume, PRODUCT_SLIDER_AUTO_MS);
+      }
+    });
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          inView = entries.some((entry) => entry.isIntersecting);
+          if (inView) start();
+          else stop();
+        },
+        { threshold: 0.2 },
+      );
+      observer.observe(slider);
+    }
+
+    window.setTimeout(start, (index % 5) * 400);
+  });
+
+  return bound;
+}
+
 function initProductZoom() {
   const dialog = document.createElement('dialog');
   dialog.className = 'zoom-view';
@@ -488,6 +572,7 @@ function initProductZoom() {
 }
 
 initProductZoom();
+bindProductImageSliders(document);
 
 const catalog = document.querySelector('[data-catalog]');
 if (catalog) initCatalog(catalog);

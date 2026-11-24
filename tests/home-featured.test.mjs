@@ -24,8 +24,8 @@ test('integration: live home loader fetches one capped page only', () => {
   assert.match(live, /page:\s*1/);
   assert.match(live, /page_size:\s*HOME_FEATURED_PAGE_SIZE/);
   assert.match(live, /\.slice\(0,\s*HOME_FEATURED_PAGE_SIZE\)/);
-  assert.doesNotMatch(live, /IntersectionObserver/);
   assert.doesNotMatch(live, /data-home-products-sentinel/);
+  assert.doesNotMatch(live, /homeFeaturedHasMore/);
 });
 
 test('module: has-more stays false so home never infinite-scrolls', () => {

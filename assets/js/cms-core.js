@@ -196,6 +196,24 @@ export function productImageUrls(product) {
 /** Home featured grid: top products only; full range lives in the catalogue. */
 export const HOME_FEATURED_PAGE_SIZE = 6;
 
+/** Milliseconds between automatic product-card photo advances (2500–8000). */
+export const PRODUCT_SLIDER_AUTO_MS = 4000;
+
+/**
+ * Next scrollLeft for a multi-photo product card track.
+ *
+ * @param {number} scrollLeft Current track.scrollLeft (px); negatives treated as 0.
+ * @param {number} width Visible slide width in px; coerced to >= 1.
+ * @param {number} slideCount Number of slides; coerced to >= 1. Max meaningful 8.
+ * @returns {number} Pixel offset for the next slide, wrapping to 0 after the last.
+ */
+export function nextProductSliderScrollLeft(scrollLeft, width, slideCount) {
+  const w = Math.max(1, Number(width) || 1);
+  const count = Math.min(8, Math.max(1, Math.floor(Number(slideCount) || 1)));
+  const current = Math.round(Math.max(0, Number(scrollLeft) || 0) / w) % count;
+  return ((current + 1) % count) * w;
+}
+
 /** Products fetched for the home announce-bar rotator (1–48). */
 export const ANNOUNCE_PRODUCT_PAGE_SIZE = 24;
 
