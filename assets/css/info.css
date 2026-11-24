@@ -701,3 +701,17 @@ body.about-brand .map-stage-facts strong{color:var(--ab-gold)}
   .ab-heritage-media img{min-height:280px}
 }
 @media(prefers-reduced-motion:reduce){.ab-hero-photo{animation:none!important;transform:none!important}}
+
+/* Product enquiry dialog */
+.enquiry-dialog{width:min(420px,calc(100vw - 28px));max-height:min(90vh,640px);padding:0;border:0;border-radius:16px;background:#fff;color:#1c2430;overflow:auto}
+.enquiry-dialog::backdrop{background:rgba(12,16,20,.55)}
+.enquiry-dialog-form{display:grid;gap:12px;padding:18px}
+.enquiry-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.enquiry-dialog-head h2{margin:0;font-size:1.35rem}
+.enquiry-dialog-head button{border:0;background:transparent;color:#667085;font-weight:700;cursor:pointer}
+.enquiry-dialog-lead{margin:0;color:#667085;font-size:.95rem}
+.enquiry-dialog-form label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
+.enquiry-dialog-form input,.enquiry-dialog-form textarea{width:100%;border:1px solid #d9d3c7;border-radius:10px;padding:10px 12px;font:inherit}
+.enquiry-dialog-error{margin:0;color:#b42318;font-size:.88rem}
+.enquiry-dialog-actions{display:flex;flex-wrap:wrap;gap:8px}
+.enquiry-dialog-form .hp{position:absolute;left:-9999px;height:0;overflow:hidden}

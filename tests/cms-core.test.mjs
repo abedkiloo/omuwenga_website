@@ -14,15 +14,92 @@ import {
   productCardHtml,
   productImageUrls,
   productEnquiry,
+  buildEnquiryPayload,
+  businessPhoneLinks,
+  enquiryFollowUpError,
   renderMarkdown,
   safeUrl,
   whatsappLink,
+  zoomDialogEnquiryLinks,
 } from '../assets/js/cms-core.mjs';
 
 test('enquiryMessage lists filled fields in order and skips blanks', () => {
   const msg = enquiryMessage({ message: '20 m webbing', name: ' Amina ', business: 'Reseller / distributor', location: '' });
-  assert.equal(msg, 'Hello Omuwenga, I have an enquiry.\nName: Amina\nBusiness: Reseller / distributor\nMessage: 20 m webbing');
+  assert.equal(
+    msg,
+    'Hello Omuwenga, I have an enquiry.\nName: Amina\nDetails: 20 m webbing\nBusiness: Reseller / distributor',
+  );
   assert.equal(enquiryMessage(undefined), 'Hello Omuwenga, I have an enquiry.');
+});
+
+test('unit: zoom dialog enquiry links keep contact + WhatsApp targets', () => {
+  const links = zoomDialogEnquiryLinks({
+    enquiryHref: '/contact/?interest=Zip',
+    askHref: 'https://wa.me/254718515142?text=Hi',
+    productName: '  No. 5 zipper  ',
+  });
+  assert.equal(links.enquiryHref, '/contact/?interest=Zip');
+  assert.equal(links.askHref, 'https://wa.me/254718515142?text=Hi');
+  assert.equal(links.label, 'Enquiry · No. 5 zipper');
+});
+
+test('corrected: enquiry button opens follow-up dialog; Ask about this stays WhatsApp', () => {
+  const card = productCardHtml({
+    name: 'Trophy stand',
+    id: 9,
+    in_stock: true,
+    image_url: 'https://x/y.jpg',
+  });
+  assert.match(card, /data-enquiry-name="Trophy stand"/);
+  assert.match(card, /data-enquiry-product="9"/);
+  assert.match(card, /data-zoom-src="https:\/\/x\/y\.jpg"/);
+  assert.match(card, /Ask about this/);
+  assert.match(card, /wa\.me\/254718515142/);
+  assert.doesNotMatch(card, /order-enquiry[^>]*data-zoom-src/);
+});
+
+test('unit: enquiry payload needs phone, amount and items', () => {
+  assert.equal(
+    enquiryFollowUpError({ phone: '0718', quantity: '4', interest: 'Zip' }),
+    'Enter a phone number we can call back on.',
+  );
+  assert.equal(
+    enquiryFollowUpError({ phone: '0718515142', quantity: '', interest: 'Zip' }),
+    'Enter the amount or quantity you need.',
+  );
+  const payload = buildEnquiryPayload({
+    phone: '0718 515 142',
+    quantity: '20 metres',
+    interest: 'No. 5 zipper',
+    product_id: '9',
+  });
+  assert.equal(payload.name, 'Customer');
+  assert.equal(payload.quantity, '20 metres');
+  assert.equal(payload.product_id, 9);
+  assert.equal(businessPhoneLinks().length, 2);
+});
+
+test('security: zoom dialog rejects javascript enquiry hrefs', () => {
+  const links = zoomDialogEnquiryLinks({
+    enquiryHref: 'javascript:alert(1)',
+    askHref: 'javascript:alert(2)',
+    productName: 'Zip',
+  });
+  assert.equal(links.enquiryHref, '/contact/');
+  assert.equal(links.askHref, '');
+  assert.doesNotMatch(links.enquiryHref, /javascript/i);
+});
+
+test('stress: zoom enquiry labels stay stable across many products', () => {
+  for (let i = 0; i < 250; i += 1) {
+    const links = zoomDialogEnquiryLinks({
+      enquiryHref: `/contact/?product=${i}`,
+      askHref: `https://wa.me/254718515142?text=${i}`,
+      productName: `Item ${i}`,
+    });
+    assert.equal(links.enquiryHref, `/contact/?product=${i}`);
+    assert.equal(links.label, `Enquiry · Item ${i}`);
+  }
 });
 
 test('escapeHtml neutralises markup', () => {

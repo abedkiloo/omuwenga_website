@@ -10,6 +10,8 @@ import {
   apiUrl,
   articleHtml,
   blogPostingJsonLd,
+  buildEnquiryPayload,
+  enquiryFollowUpError,
   enquiryMessage,
   escapeHtml,
   featuredProductCardHtml,
@@ -22,7 +24,8 @@ import {
   productCardHtml,
   shuffleProducts,
   whatsappLink,
-} from './cms-core.js?v=16';
+  zoomDialogEnquiryLinks,
+} from './cms-core.js?v=18';
 
 const config = window.OMUWENGA_CONFIG || { apiBase: '', siteUrl: '', websiteKey: '' };
 
@@ -301,7 +304,7 @@ async function initHomeProducts(section) {
   }
 }
 
-/* ---------- Contact form → WhatsApp ---------- */
+/* ---------- Contact form + product Enquiry dialog ---------- */
 
 function fillEnquiryFromQuery(form) {
   const params = new URLSearchParams(window.location.search);
@@ -322,6 +325,29 @@ function fillEnquiryFromQuery(form) {
   field.value = interest;
 }
 
+async function submitEnquiryFields(fields, { onSuccess, onError } = {}) {
+  const error = enquiryFollowUpError(fields);
+  if (error) {
+    if (onError) onError(error);
+    return false;
+  }
+  const payload = buildEnquiryPayload(fields);
+  try {
+    const res = await fetch(apiUrl(config.apiBase, 'enquiries/'), {
+      method: 'POST',
+      headers: apiHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (onSuccess) onSuccess(payload);
+    return true;
+  } catch {
+    if (onError) onError('We could not save that just now. WhatsApp is open so the message is not lost.');
+    window.open(whatsappLink(enquiryMessage(payload)), '_blank', 'noopener');
+    return false;
+  }
+}
+
 function initEnquiryForm(form) {
   const result = form.parentElement.querySelector('[data-enquiry-result]');
   fillEnquiryFromQuery(form);
@@ -330,37 +356,110 @@ function initEnquiryForm(form) {
     const fields = Object.fromEntries(new FormData(form).entries());
     const button = form.querySelector('[type="submit"]');
     if (button) button.disabled = true;
-    const payload = {
-      name: fields.name || '',
-      phone: fields.phone || '',
-      business: fields.business || '',
-      location: fields.location || '',
-      interest: fields.interest || '',
-      message: fields.message || '',
-      product_id: fields.product_id ? Number(fields.product_id) : null,
-      company_website: fields.company_website || '',
-    };
-    try {
-      const res = await fetch(apiUrl(config.apiBase, 'enquiries/'), {
-        method: 'POST',
-        headers: apiHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      form.hidden = true;
-      if (result) {
-        result.hidden = false;
-        result.innerHTML = `We have your enquiry and will review it. <a href="${escapeHtml(whatsappLink(enquiryMessage(fields)))}">Continue on WhatsApp</a> if you want a reply now.`;
-      }
-    } catch {
-      if (button) button.disabled = false;
-      if (result) {
-        result.hidden = false;
-        result.textContent = 'We could not save that just now. WhatsApp is open so the message is not lost.';
-      }
-      window.open(whatsappLink(enquiryMessage(fields)), '_blank', 'noopener');
-    }
+    const ok = await submitEnquiryFields(fields, {
+      onSuccess: () => {
+        form.hidden = true;
+        if (result) {
+          result.hidden = false;
+          result.innerHTML = `We have your enquiry and will call you back. <a href="${escapeHtml(whatsappLink(enquiryMessage(fields)))}">Continue on WhatsApp</a> if you want a reply now.`;
+        }
+      },
+      onError: (message) => {
+        if (button) button.disabled = false;
+        if (result) {
+          result.hidden = false;
+          result.textContent = message;
+        }
+      },
+    });
+    if (!ok && button) button.disabled = false;
   });
+}
+
+/**
+ * Product Enquiry dialog: phone, amount, and items → shop inbox for follow-up.
+ *
+ * Returns the open function used by card and zoom Enquiry buttons.
+ */
+function initEnquiryDialog() {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'enquiry-dialog';
+  dialog.innerHTML = `<form method="dialog" class="enquiry-dialog-form" data-enquiry-dialog-form>
+    <div class="enquiry-dialog-head">
+      <h2>Send an enquiry</h2>
+      <button type="button" data-enquiry-close aria-label="Close">Close</button>
+    </div>
+    <p class="enquiry-dialog-lead">Leave your number, the amount, and the items. The shop will follow up.</p>
+    <label>Your phone<input type="tel" name="phone" autocomplete="tel" required placeholder="07xx xxx xxx"></label>
+    <label>Amount / quantity<input type="text" name="quantity" required maxlength="80" placeholder="e.g. 20 metres, 4 pieces"></label>
+    <label>Items you want<textarea name="interest" rows="3" required maxlength="200" placeholder="Product names and sizes"></textarea></label>
+    <label>Extra details (optional)<textarea name="message" rows="3" maxlength="500" placeholder="Colour, delivery town, timing"></textarea></label>
+    <label>Your name (optional)<input type="text" name="name" autocomplete="name" maxlength="120"></label>
+    <input type="hidden" name="product_id" value="">
+    <label class="hp">Leave this empty<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>
+    <p class="enquiry-dialog-error" data-enquiry-dialog-error hidden></p>
+    <div class="enquiry-dialog-actions">
+      <button type="submit" class="button">Send enquiry</button>
+      <button type="button" class="button button-outline" data-enquiry-close>Cancel</button>
+    </div>
+  </form>`;
+  document.body.append(dialog);
+  const form = dialog.querySelector('[data-enquiry-dialog-form]');
+  const errorEl = dialog.querySelector('[data-enquiry-dialog-error]');
+  dialog.querySelectorAll('[data-enquiry-close]').forEach((button) => {
+    button.addEventListener('click', () => dialog.close());
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const fields = Object.fromEntries(new FormData(form).entries());
+    const button = form.querySelector('[type="submit"]');
+    if (button) button.disabled = true;
+    errorEl.hidden = true;
+    const ok = await submitEnquiryFields(fields, {
+      onSuccess: () => {
+        dialog.close();
+        form.reset();
+        window.alert('Enquiry sent. The shop will call you on the number you left.');
+      },
+      onError: (message) => {
+        errorEl.hidden = false;
+        errorEl.textContent = message;
+      },
+    });
+    if (button) button.disabled = false;
+    if (!ok) return;
+  });
+
+  function openEnquiry(seed = {}) {
+    form.reset();
+    errorEl.hidden = true;
+    if (form.elements.interest) form.elements.interest.value = seed.interest || '';
+    if (form.elements.message) form.elements.message.value = seed.message || '';
+    if (form.elements.product_id) form.elements.product_id.value = seed.productId || '';
+    if (form.elements.quantity) form.elements.quantity.value = seed.quantity || '';
+    if (!dialog.open) dialog.showModal();
+    form.elements.phone?.focus();
+  }
+
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('.order-enquiry, [data-zoom-enquiry]');
+    if (!trigger) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const card = trigger.closest('.product-card');
+    const interest = trigger.dataset.enquiryName
+      || card?.querySelector('[data-zoom-name]')?.dataset.zoomName
+      || trigger.getAttribute('aria-label')?.replace(/^Enquiry ·\s*/i, '')
+      || '';
+    openEnquiry({
+      interest: interest.trim(),
+      productId: trigger.dataset.enquiryProduct || '',
+      message: interest.trim() ? `Enquiry for ${interest.trim()}` : '',
+    });
+  });
+
+  return openEnquiry;
 }
 
 /**
@@ -448,9 +547,11 @@ function initProductZoom() {
   const dialog = document.createElement('dialog');
   dialog.className = 'zoom-view';
   dialog.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 28px));height:auto;max-width:min(520px,calc(100vw - 28px));max-height:min(72vh,640px);margin:0;padding:0;border:0;border-radius:16px;background:#fff;color:#1c2430;overflow:hidden';
-  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:#1c2430;color:#fff"><p class="zoom-title" style="margin:0;font-size:.92rem;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:6px"><button type="button" data-zoom-prev aria-label="Previous photo">‹</button><button type="button" data-zoom-next aria-label="Next photo">›</button><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-views" style="display:flex;gap:6px;padding:8px;background:#fff"></div><div class="zoom-stage" style="display:grid;place-items:center;overflow:hidden;padding:12px;background:#f6f3ee"><img alt="" style="width:auto;height:auto;max-width:100%;max-height:min(50vh,420px);object-fit:contain"></div>`;
+  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:#1c2430;color:#fff"><p class="zoom-title" style="margin:0;font-size:.92rem;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:6px"><button type="button" data-zoom-prev aria-label="Previous photo">‹</button><button type="button" data-zoom-next aria-label="Next photo">›</button><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-actions" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px;background:#fff;border-bottom:1px solid #e8e2d8"><button type="button" class="button button-small" data-zoom-enquiry style="min-height:34px;padding:0 14px;border-radius:999px;background:#075b9d;color:#fff;font-weight:800;border:0;cursor:pointer">Enquiry</button><a class="button button-small button-outline" data-zoom-ask href="#" hidden style="min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #075b9d;color:#075b9d;font-weight:800;text-decoration:none;display:inline-flex;align-items:center">Ask on WhatsApp</a><span class="zoom-hint" style="margin-left:auto;font-size:.78rem;color:#667085">Tap the photo to zoom</span></div><div class="zoom-views" style="display:flex;gap:6px;padding:8px;background:#fff"></div><div class="zoom-stage" style="display:grid;place-items:center;overflow:hidden;padding:12px;background:#f6f3ee"><img alt="" style="width:auto;height:auto;max-width:100%;max-height:min(50vh,420px);object-fit:contain"></div>`;
   document.body.append(dialog);
   const title = dialog.querySelector('.zoom-title');
+  const enquiryBtn = dialog.querySelector('[data-zoom-enquiry]');
+  const askLink = dialog.querySelector('[data-zoom-ask]');
   const stage = dialog.querySelector('.zoom-stage');
   const img = stage.querySelector('img');
   const view = { scale: 1, x: 0, y: 0, drag: null, moved: false, gallery: [], index: 0 };
@@ -534,6 +635,10 @@ function initProductZoom() {
   });
 
   document.addEventListener('click', (event) => {
+    // Enquiry / WhatsApp must win over zoom — never open the lightbox for those.
+    if (event.target.closest('a.order-enquiry, a.ask-link, a.luxe-add, [data-zoom-enquiry], [data-zoom-ask]')) {
+      return;
+    }
     const step = event.target.closest('[data-slider-step]');
     if (step) {
       event.preventDefault();
@@ -551,6 +656,21 @@ function initProductZoom() {
     img.src = opener.dataset.zoomSrc;
     const views = dialog.querySelector('.zoom-views');
     const card = opener.closest('.product-card');
+    const links = zoomDialogEnquiryLinks({
+      enquiryHref: '/contact/',
+      askHref: card?.querySelector('a.ask-link')?.getAttribute('href') || '',
+      productName: opener.dataset.zoomName || '',
+    });
+    enquiryBtn.dataset.enquiryName = opener.dataset.zoomName || '';
+    enquiryBtn.dataset.enquiryProduct = card?.querySelector('[data-enquiry-product]')?.dataset.enquiryProduct || '';
+    enquiryBtn.setAttribute('aria-label', links.label);
+    if (links.askHref) {
+      askLink.href = links.askHref;
+      askLink.hidden = false;
+    } else {
+      askLink.removeAttribute('href');
+      askLink.hidden = true;
+    }
     const sources = card
       ? [...card.querySelectorAll('[data-zoom-src]')].map((node) => node.dataset.zoomSrc).filter(Boolean)
       : [opener.dataset.zoomSrc];
@@ -586,5 +706,6 @@ const homeProducts = document.querySelector('[data-home-products]');
 if (homeProducts) initHomeProducts(homeProducts);
 const announceProducts = document.querySelector('[data-announce-products]');
 if (announceProducts) initAnnounceProducts(announceProducts);
+initEnquiryDialog();
 const enquiryForm = document.querySelector('[data-whatsapp-form]');
 if (enquiryForm) initEnquiryForm(enquiryForm);

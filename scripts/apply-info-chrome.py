@@ -71,7 +71,7 @@ def footer(prefix: str) -> str:
     maps = "https://maps.app.goo.gl/NaAHLbMCyyg8Dcfu5"
     return f'''<footer class="site-footer">
 <div class="footer-cta"><div class="container footer-cta-inner">
-<div><p class="footer-cta-kicker">Visit the go-to stall</p><h2>Gikomba Market, Nairobi</h2><p>Monday to Saturday, 8:00am–6:00pm · Call or WhatsApp 0718 515 142 for directions.</p></div>
+<div><p class="footer-cta-kicker">Visit the go-to stall</p><h2>Gikomba Market, Nairobi</h2><p>Monday to Saturday, 8:00am–6:00pm · Call 0718 515 142 or 180 154 352 for directions.</p></div>
 <div class="button-row"><a class="button" href="{maps}">Open Google Maps</a><a class="button button-outline" href="{WA}">Get in Touch</a></div>
 </div></div>
 <div class="container footer-grid">
@@ -79,7 +79,7 @@ def footer(prefix: str) -> str:
 <p>Kenya&rsquo;s go-to furniture and upholstery fittings supplier — wholesale and retail for workshops, manufacturers, upholsterers and resellers across East Africa.</p>
 <p><a href="{pdf}">Product catalogue (PDF)</a></p></div>
 <div><h2>Company</h2><p><a href="{url(prefix, "about/")}">About</a><br><a href="{url(prefix, "contact/")}">Contact</a><br><a href="{url(prefix, "careers/")}">Careers</a><br><a href="{url(prefix, "work/")}">Our Work</a><br><a href="{url(prefix, "catalogue/")}">Catalogue</a><br><a href="{url(prefix, "faq/")}">FAQ</a><br><a href="{url(prefix, "blog/")}">Blog</a></p></div>
-<div><h2>Contact</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a><br><a href="tel:+254718515142">0718 515 142</a><br><a href="{WA}">WhatsApp</a><br>Gikomba Market, Nairobi<br>Mon–Sat, 8:00am–6:00pm</p></div>
+<div><h2>Contact</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a><br><a href="tel:+254718515142">0718 515 142</a> · <a href="tel:+254180154352">180 154 352</a><br><a href="{WA}">WhatsApp</a><br>Gikomba Market, Nairobi<br>Mon–Sat, 8:00am–6:00pm</p></div>
 <div><h2>Visit</h2><p>Omuwenga Suppliers<br>Gikomba Market, Nairobi, Kenya<br>Collect in Gikomba, or ask about a courier across Kenya.<br><a href="{url(prefix, "location/")}">Location &amp; map</a></p></div>
 </div><div class="container footer-bottom"><span>© <span data-year></span> Omuwenga Suppliers</span><a href="{url(prefix, "privacy/")}">Privacy Policy</a><a href="{url(prefix, "terms/")}">Terms</a></div></footer>
 <a class="whatsapp-float" href="{WA}" aria-label="Get in Touch"><span class="whatsapp-float-label">Get in Touch</span></a>'''
@@ -337,7 +337,7 @@ def rewrite_contact():
     body = f'''<section class="page-hero"><div class="container"><p class="crumbs"><a href="../">Home</a> / Contact</p><h1>Contact the shop</h1>
 <p>Ask about a size, a colour or a quantity. The shop replies on WhatsApp, by phone or by email.</p></div></section>
 <section class="band"><div class="container contact-blocks">
-<article><h2>Telephone</h2><p><a href="tel:+254718515142">0718 515 142</a></p><p>Call during shop hours for sizes, stock and directions.</p></article>
+<article><h2>Telephone</h2><p><a href="tel:+254718515142">0718 515 142</a><br><a href="tel:+254180154352">180 154 352</a></p><p>Call during shop hours for sizes, stock and directions.</p></article>
 <article><h2>WhatsApp</h2><p><a class="button" href="{WA}">Get in Touch</a></p><p>The message starts with a short note you can edit.</p></article>
 <article><h2>Email</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a></p><p>For trade enquiries and written quotes.</p></article>
 <article><h2>Address</h2><p>Omuwenga Suppliers<br>Gikomba Market, Nairobi, Kenya</p><p>Monday to Saturday, 8:00am–6:00pm. Call or WhatsApp when you are nearby and we will guide you to the stall.</p></article>

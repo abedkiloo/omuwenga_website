@@ -8,9 +8,35 @@ export const BUSINESS = {
   legalName: 'Omuwenga Suppliers',
   tagline: "The Furniture Maker's Supply Partner",
   whatsapp: '254718515142',
-  phones: ['+254718515142'],
+  phones: [
+    { tel: '+254718515142', display: '0718 515 142' },
+    { tel: '+254180154352', display: '180 154 352' },
+  ],
   email: 'info@omuwenga.com',
 };
+
+/**
+ * Call links for the shop's published numbers.
+ *
+ * Returns:
+ *   Array of `{ tel, display, href }` for each phone in ``BUSINESS.phones``
+ *   (0–4 entries). Empty when none are configured.
+ */
+export function businessPhoneLinks(phones = BUSINESS.phones) {
+  const rows = Array.isArray(phones) ? phones.slice(0, 4) : [];
+  return rows
+    .map((row) => {
+      if (typeof row === 'string') {
+        const tel = String(row).trim();
+        return tel ? { tel, display: tel, href: `tel:${tel}` } : null;
+      }
+      const tel = String(row?.tel || '').trim();
+      if (!tel) return null;
+      const display = String(row?.display || tel).trim() || tel;
+      return { tel, display, href: `tel:${tel}` };
+    })
+    .filter(Boolean);
+}
 
 const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 
@@ -147,13 +173,41 @@ export function enquiryPageHref(product) {
   return query ? `/contact/?${query}` : '/contact/';
 }
 
+/**
+ * Safe Enquiry / WhatsApp targets for the product zoom dialog.
+ *
+ * Args:
+ *   links (object|null|undefined): Optional `enquiryHref`, `askHref`, and
+ *     `productName`. Hrefs are checked with `safeUrl`. Names are trimmed and
+ *     capped at 120 characters.
+ *
+ * Returns:
+ *   object: `enquiryHref` (safe contact URL, defaults to `/contact/`),
+ *     `askHref` (safe WhatsApp URL or empty), and `label` (button text,
+ *     at most ~140 characters). Never returns a javascript: URL.
+ *
+ * Raises:
+ *   Nothing. Missing input falls back to a plain contact enquiry.
+ */
+export function zoomDialogEnquiryLinks(links) {
+  const enquiryHref = safeUrl(String(links?.enquiryHref || '').trim()) || '/contact/';
+  const askHref = safeUrl(String(links?.askHref || '').trim());
+  const name = String(links?.productName || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  return {
+    enquiryHref,
+    askHref,
+    label: name ? `Enquiry · ${name}` : 'Send enquiry',
+  };
+}
+
 const ENQUIRY_FIELDS = [
   ['name', 'Name'],
   ['phone', 'Phone'],
+  ['quantity', 'Amount'],
+  ['interest', 'Items'],
+  ['message', 'Details'],
   ['business', 'Business'],
   ['location', 'Location'],
-  ['interest', 'Interested in'],
-  ['message', 'Message'],
 ];
 
 /** Turn contact-form fields into a WhatsApp-ready message, skipping blanks. */
@@ -163,6 +217,63 @@ export function enquiryMessage(fields) {
     return value ? `${label}: ${value}` : '';
   }).filter(Boolean);
   return ['Hello Omuwenga, I have an enquiry.', ...lines].join('\n');
+}
+
+/**
+ * Build the public enquiry payload the shop inbox expects.
+ *
+ * Args:
+ *   fields (object): Form values. ``phone`` and ``quantity`` are required for
+ *     a follow-up. ``interest`` / ``message`` carry the items. ``name`` defaults
+ *     to ``Customer`` when blank so the API accepts the lead.
+ *
+ * Returns:
+ *   object: API body with trimmed strings. ``product_id`` is a number or null.
+ *   Quantity and phone are trimmed to 80 and 40 characters.
+ */
+export function buildEnquiryPayload(fields) {
+  const phone = String(fields?.phone || '').trim().slice(0, 40);
+  const quantity = String(fields?.quantity || '').trim().slice(0, 80);
+  const interest = String(fields?.interest || '').trim().slice(0, 200);
+  const message = String(fields?.message || '').trim().slice(0, 2000);
+  const nameRaw = String(fields?.name || '').trim().slice(0, 120);
+  const productRaw = fields?.product_id;
+  const productId = productRaw === '' || productRaw == null ? null : Number(productRaw);
+  return {
+    name: nameRaw.length >= 2 ? nameRaw : 'Customer',
+    phone,
+    quantity,
+    interest,
+    message: message || interest,
+    business: String(fields?.business || '').trim().slice(0, 120),
+    location: String(fields?.location || '').trim().slice(0, 120),
+    product_id: Number.isFinite(productId) && productId > 0 ? productId : null,
+    company_website: String(fields?.company_website || '').trim(),
+  };
+}
+
+/**
+ * Whether the enquiry form has the three follow-up fields filled.
+ *
+ * Args:
+ *   fields (object): At least ``phone``, ``quantity``, and items via
+ *     ``interest`` or ``message``.
+ *
+ * Returns:
+ *   string: Empty when ready; otherwise a short staff-facing error.
+ */
+export function enquiryFollowUpError(fields) {
+  const phoneDigits = String(fields?.phone || '').replace(/\D/g, '');
+  if (phoneDigits.length < 9 || phoneDigits.length > 15) {
+    return 'Enter a phone number we can call back on.';
+  }
+  if (!String(fields?.quantity || '').trim()) {
+    return 'Enter the amount or quantity you need.';
+  }
+  if (!String(fields?.interest || '').trim() && !String(fields?.message || '').trim()) {
+    return 'Tell us which items you want.';
+  }
+  return '';
 }
 
 function initials(name) {
@@ -332,7 +443,7 @@ export function productCardHtml(product) {
     ${category ? `<span class="product-card-category">${escapeHtml(category)}</span>` : ''}
     <h3>${imageUrl ? `<button type="button" class="product-open" data-zoom-src="${imageUrl}" data-zoom-name="${name}" style="border:0;background:transparent;padding:0;font:inherit;color:inherit">${name}</button>` : name}</h3>
     ${description ? `<p>${description}</p>` : ''}
-    <div class="product-card-meta"><span class="stock-row">${stock}<a class="button button-small button-outline order-enquiry" style="display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:#fff;border:2px solid #075b9d;color:#075b9d;font-size:.72rem;font-weight:800;text-decoration:none" href="${escapeHtml(enquiryPageHref(product))}">Enquiry</a></span>${price ? `<strong class="product-price">${price}</strong>` : ''}</div>
+    <div class="product-card-meta"><span class="stock-row">${stock}<button type="button" class="button button-small button-outline order-enquiry" style="display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:#fff;border:2px solid #075b9d;color:#075b9d;font-size:.72rem;font-weight:800;cursor:pointer" data-enquiry-name="${name}" data-enquiry-product="${escapeHtml(product?.id != null ? String(product.id) : '')}">Enquiry</button></span>${price ? `<strong class="product-price">${price}</strong>` : ''}</div>
     <div class="product-card-actions">
       <a class="ask-link" href="${escapeHtml(whatsappLink(productEnquiry(product)))}">Ask about this</a>
     </div>
