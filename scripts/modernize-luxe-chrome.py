@@ -21,13 +21,13 @@ def html_files():
 
 
 def bump_css(html: str, prefix: str) -> str:
-    html = re.sub(r'(assets/css/styles\.css)\?v=\d+', r'\1?v=14', html)
+    html = re.sub(r'(assets/css/styles\.css)\?v=\d+', r'\1?v=15', html)
     html = re.sub(r'(assets/css/info\.css)\?v=\d+', r'\1?v=12', html)
     # bare href without query
-    html = html.replace(f'{prefix}assets/css/styles.css"', f'{prefix}assets/css/styles.css?v=14"')
+    html = html.replace(f'{prefix}assets/css/styles.css"', f'{prefix}assets/css/styles.css?v=15"')
     html = html.replace(f'{prefix}assets/css/info.css"', f'{prefix}assets/css/info.css?v=12"')
     # absolute root 404
-    html = html.replace('href="/assets/css/styles.css"', 'href="/assets/css/styles.css?v=14"')
+    html = html.replace('href="/assets/css/styles.css"', 'href="/assets/css/styles.css?v=15"')
     html = html.replace('href="/assets/css/info.css"', 'href="/assets/css/info.css?v=12"')
     return html
 

@@ -70,7 +70,7 @@ test('stress: advancing 500 times stays on the slide grid', () => {
 
 test('corrected functionality: product pages load the auto-scrolling live module', () => {
   assert.match(products, /data-catalog/);
-  assert.match(products, /live\.js\?v=19/);
+  assert.match(products, /live\.js\?v=22/);
   assert.match(live, /dataset\.autoBound/);
   assert.match(live, /scrollTo/);
 });

@@ -546,20 +546,54 @@ function bindProductImageSliders(root = document) {
 function initProductZoom() {
   const dialog = document.createElement('dialog');
   dialog.className = 'zoom-view';
-  dialog.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 28px));height:auto;max-width:min(520px,calc(100vw - 28px));max-height:min(72vh,640px);margin:0;padding:0;border:0;border-radius:16px;background:#fff;color:#1c2430;overflow:hidden';
-  dialog.innerHTML = `<div class="zoom-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:#1c2430;color:#fff"><p class="zoom-title" style="margin:0;font-size:.92rem;font-weight:700"></p><div class="zoom-controls" style="display:flex;gap:6px"><button type="button" data-zoom-prev aria-label="Previous photo">‹</button><button type="button" data-zoom-next aria-label="Next photo">›</button><button type="button" data-zoom-out aria-label="Zoom out">−</button><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-close aria-label="Close">Close</button></div></div><div class="zoom-actions" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px;background:#fff;border-bottom:1px solid #e8e2d8"><button type="button" class="button button-small" data-zoom-enquiry style="min-height:34px;padding:0 14px;border-radius:999px;background:#075b9d;color:#fff;font-weight:800;border:0;cursor:pointer">Enquiry</button><a class="button button-small button-outline" data-zoom-ask href="#" hidden style="min-height:34px;padding:0 14px;border-radius:999px;border:2px solid #075b9d;color:#075b9d;font-weight:800;text-decoration:none;display:inline-flex;align-items:center">Ask on WhatsApp</a><span class="zoom-hint" style="margin-left:auto;font-size:.78rem;color:#667085">Tap the photo to zoom</span></div><div class="zoom-views" style="display:flex;gap:6px;padding:8px;background:#fff"></div><div class="zoom-stage" style="display:grid;place-items:center;overflow:hidden;padding:12px;background:#f6f3ee"><img alt="" style="width:auto;height:auto;max-width:100%;max-height:min(50vh,420px);object-fit:contain"></div>`;
+  dialog.setAttribute('aria-label', 'Product photo');
+  dialog.innerHTML = `<div class="zoom-shell">
+  <div class="zoom-bar">
+    <p class="zoom-title"></p>
+    <div class="zoom-controls">
+      <button type="button" data-zoom-out aria-label="Zoom out">−</button>
+      <button type="button" data-zoom-in aria-label="Zoom in">+</button>
+      <button type="button" data-zoom-close aria-label="Close">Close</button>
+    </div>
+  </div>
+  <div class="zoom-actions">
+    <button type="button" class="button button-small" data-zoom-enquiry>Enquiry</button>
+    <a class="button button-small button-outline" data-zoom-ask href="#" hidden>Ask on WhatsApp</a>
+    <span class="zoom-hint">Tap the photo to zoom · Esc to close</span>
+  </div>
+  <div class="zoom-views" hidden></div>
+  <div class="zoom-stage-wrap">
+    <button type="button" class="zoom-stage-nav prev" data-zoom-prev aria-label="Previous photo" hidden>‹</button>
+    <button type="button" class="zoom-stage-nav next" data-zoom-next aria-label="Next photo" hidden>›</button>
+    <div class="zoom-stage"><img alt=""></div>
+  </div>
+</div>`;
   document.body.append(dialog);
   const title = dialog.querySelector('.zoom-title');
   const enquiryBtn = dialog.querySelector('[data-zoom-enquiry]');
   const askLink = dialog.querySelector('[data-zoom-ask]');
   const stage = dialog.querySelector('.zoom-stage');
+  const views = dialog.querySelector('.zoom-views');
+  const prevBtn = dialog.querySelector('[data-zoom-prev]');
+  const nextBtn = dialog.querySelector('[data-zoom-next]');
   const img = stage.querySelector('img');
   const view = { scale: 1, x: 0, y: 0, drag: null, moved: false, gallery: [], index: 0 };
+
+  function syncGalleryChrome() {
+    const many = view.gallery.length > 1;
+    prevBtn.hidden = !many;
+    nextBtn.hidden = !many;
+    views.hidden = !many;
+    views.querySelectorAll('[data-zoom-pick]').forEach((button) => {
+      button.classList.toggle('is-active', button.dataset.zoomPick === view.gallery[view.index]);
+    });
+  }
 
   function showGallery(index) {
     if (!view.gallery.length) return;
     view.index = (index + view.gallery.length) % view.gallery.length;
     img.src = view.gallery[view.index];
+    syncGalleryChrome();
     reset();
   }
 
@@ -580,8 +614,14 @@ function initProductZoom() {
   }
 
   dialog.querySelector('[data-zoom-close]').addEventListener('click', () => dialog.close());
-  dialog.querySelector('[data-zoom-prev]').addEventListener('click', () => showGallery(view.index - 1));
-  dialog.querySelector('[data-zoom-next]').addEventListener('click', () => showGallery(view.index + 1));
+  prevBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    showGallery(view.index - 1);
+  });
+  nextBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    showGallery(view.index + 1);
+  });
   dialog.querySelector('[data-zoom-in]').addEventListener('click', () => {
     view.scale = clampScale(view.scale + 0.5);
     paint();
@@ -595,8 +635,18 @@ function initProductZoom() {
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) dialog.close();
   });
+  dialog.addEventListener('keydown', (event) => {
+    if (!dialog.open) return;
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      showGallery(view.index - 1);
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      showGallery(view.index + 1);
+    }
+  });
   stage.addEventListener('click', (event) => {
-    if (event.target.closest('button') || view.moved) {
+    if (view.moved) {
       view.moved = false;
       return;
     }
@@ -654,7 +704,6 @@ function initProductZoom() {
     title.textContent = opener.dataset.zoomName || '';
     img.alt = opener.dataset.zoomName || '';
     img.src = opener.dataset.zoomSrc;
-    const views = dialog.querySelector('.zoom-views');
     const card = opener.closest('.product-card');
     const links = zoomDialogEnquiryLinks({
       enquiryHref: '/contact/',
@@ -678,14 +727,15 @@ function initProductZoom() {
     view.gallery = unique;
     view.index = Math.max(0, unique.indexOf(opener.dataset.zoomSrc));
     views.innerHTML = unique.length > 1
-      ? unique.map((src) => `<button type="button" data-zoom-pick="${src}" style="border:1px solid #d9d3c7;padding:0;background:#fff"><img src="${src}" alt="" width="48" height="48"></button>`).join('')
+      ? unique.map((src) => `<button type="button" data-zoom-pick="${src}"><img src="${src}" alt="" width="56" height="56"></button>`).join('')
       : '';
     views.querySelectorAll('[data-zoom-pick]').forEach((button) => {
       button.addEventListener('click', () => {
-        img.src = button.dataset.zoomPick;
-        reset();
+        const next = view.gallery.indexOf(button.dataset.zoomPick);
+        showGallery(next >= 0 ? next : view.index);
       });
     });
+    syncGalleryChrome();
     reset();
     if (!dialog.open) dialog.showModal();
   });
